@@ -1,17 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import apiClient from "../lib/api-client";
-
-/**
- * useAskCompanion — sends a user message to the backend AI health companion.
- * Returns: { data: { reply: string }, mutate, isPending }
- */
 
 export const useAskCompanion = () => {
   return useMutation({
     mutationFn: async (message) => {
-      const response = await apiClient.post("/chat", { message });
-
-      return response.data?.data?.reply || response.data?.reply || "";
+      await new Promise(r => setTimeout(r, 800));
+      return "I'm your local AI companion. You said: " + message;
     },
   });
 };

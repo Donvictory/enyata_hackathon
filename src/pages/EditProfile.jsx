@@ -133,7 +133,7 @@ export function EditProfile() {
           </Button>
           <div className="flex items-center gap-2 px-4 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">
+            <span className="text-sm text-opacity-80 font-semibold text-emerald-700 font-medium tracking-wide">
               Privacy Protected
             </span>
           </div>
@@ -152,7 +152,7 @@ export function EditProfile() {
               <Camera className="w-4 h-4" />
             </button>
           </div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-3xl font-semibold text-gray-900 tracking-normal">
             Edit Profile
           </h1>
           <p className="text-gray-500 font-medium mt-1">
@@ -176,7 +176,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="name"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     Full Name
                   </Label>
@@ -194,7 +194,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     Email Address
                   </Label>
@@ -214,7 +214,7 @@ export function EditProfile() {
               <div className="space-y-2">
                 <Label
                   htmlFor="phone"
-                  className="text-xs font-black uppercase tracking-widest text-gray-400"
+                  className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                 >
                   Phone Number (Optional)
                 </Label>
@@ -234,7 +234,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="age"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     Age
                   </Label>
@@ -251,7 +251,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="sex"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     Biological Sex
                   </Label>
@@ -277,7 +277,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="height"
-                    className="text-xs font-black uppercase tracking-widest text-emerald-600"
+                    className="text-xs font-semibold font-medium tracking-wide text-emerald-600"
                   >
                     Height (cm)
                   </Label>
@@ -295,7 +295,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="weight"
-                    className="text-xs font-black uppercase tracking-widest text-emerald-600"
+                    className="text-xs font-semibold font-medium tracking-wide text-emerald-600"
                   >
                     Weight (kg)
                   </Label>
@@ -316,7 +316,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="state"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     State of Residence
                   </Label>
@@ -342,7 +342,7 @@ export function EditProfile() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="city"
-                    className="text-xs font-black uppercase tracking-widest text-gray-400"
+                    className="text-xs font-semibold font-medium tracking-wide text-gray-400"
                   >
                     City/Town
                   </Label>
@@ -369,7 +369,7 @@ export function EditProfile() {
               </Button>
               <Button
                 onClick={handleSave}
-                className="flex-[2] h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-200 font-black"
+                className="flex-[2] h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-200 font-semibold"
               >
                 <Save className="w-5 h-5 mr-3" />
                 Update Profile

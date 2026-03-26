@@ -46,9 +46,9 @@ export function LandingPage() {
             <div className="bg-emerald-600 p-1.5 rounded-xl shadow-lg shadow-emerald-100">
               <Activity className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg md:text-xl font-black tracking-tighter text-gray-900">
+            <span className="text-lg md:text-xl font-semibold tracking-normaler text-gray-900">
               DRIFT<span className="text-emerald-600">CARE</span>{" "}
-              <span className="text-xs font-black text-gray-400 tracking-widest">
+              <span className="text-xs font-semibold text-gray-400 tracking-widest">
                 NG
               </span>
             </span>
@@ -67,7 +67,7 @@ export function LandingPage() {
               <div className="flex sm:hidden items-center gap-4">
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="text-xs font-black text-emerald-600 uppercase tracking-widest"
+                  className="text-xs font-semibold text-emerald-600 font-medium tracking-wide"
                 >
                   Dashboard
                 </button>
@@ -92,7 +92,7 @@ export function LandingPage() {
               <div className="flex sm:hidden items-center gap-4">
                 <button
                   onClick={() => navigate("/login")}
-                  className="text-xs font-black text-emerald-600 uppercase tracking-widest"
+                  className="text-xs font-semibold text-emerald-600 font-medium tracking-wide"
                 >
                   Login
                 </button>
@@ -126,7 +126,7 @@ export function LandingPage() {
             className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-full mb-6 md:mb-8"
           >
             <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span className="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">
+            <span className="text-sm text-opacity-80 md:text-xs font-semibold text-emerald-700 font-medium tracking-wide">
               Nigeria&apos;s AI-Powered Preventive Health Platform
             </span>
           </motion.div>
@@ -134,7 +134,7 @@ export function LandingPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-8xl font-black text-gray-900 tracking-tighter mb-6 md:mb-8 leading-[1.1] md:leading-[0.9]"
+            className="text-5xl md:text-8xl font-semibold text-gray-900 tracking-normaler mb-6 md:mb-8 leading-[1.1] md:leading-[0.9]"
           >
             Detect Drift. <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">
@@ -168,7 +168,7 @@ export function LandingPage() {
             ].map((tag) => (
               <span
                 key={tag}
-                className="bg-white border border-gray-200 text-gray-600 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-sm"
+                className="bg-white border border-gray-200 text-gray-600 text-xs font-semibold font-medium tracking-wide px-4 py-2 rounded-full shadow-sm"
               >
                 {tag}
               </span>
@@ -215,16 +215,16 @@ export function LandingPage() {
       <section className="py-10 px-4 md:px-6 bg-gray-900 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-base md:text-lg font-bold text-gray-300 leading-relaxed">
-            <span className="text-emerald-400 font-black">
+            <span className="text-emerald-400 font-semibold">
               The Problem in Nigeria:
             </span>{" "}
             Most people only visit hospitals when symptoms become severe. Silent
             conditions like{" "}
-            <span className="text-white font-black">
+            <span className="text-white font-semibold">
               Hypertension, Diabetes &amp; Malaria
             </span>{" "}
             go undetected for months. DriftCare changes that with{" "}
-            <span className="text-emerald-400 font-black">
+            <span className="text-emerald-400 font-semibold">
               daily behavioral tracking
             </span>
             .
@@ -236,7 +236,7 @@ export function LandingPage() {
       <section className="py-16 md:py-20 px-4 md:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter mb-4">
+            <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-normaler mb-4">
               How DriftCare NG Works
             </h2>
             <p className="text-gray-500 font-medium max-w-xl mx-auto">
@@ -252,7 +252,7 @@ export function LandingPage() {
               <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-sm mb-4 md:mb-6 text-emerald-600">
                 <Activity className="w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 tracking-normal">
                 Daily Check-In
               </h3>
               <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">
@@ -268,7 +268,7 @@ export function LandingPage() {
               <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-sm mb-4 md:mb-6 text-blue-600">
                 <TrendingUp className="w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 tracking-normal">
                 Drift Detection
               </h3>
               <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">
@@ -285,7 +285,7 @@ export function LandingPage() {
               <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-sm mb-4 md:mb-6 text-amber-600">
                 <AlertTriangle className="w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 tracking-normal">
                 Early Alerts
               </h3>
               <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">
@@ -301,7 +301,7 @@ export function LandingPage() {
               <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-sm mb-4 md:mb-6 text-purple-600">
                 <FileText className="w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-3 md:mb-4 tracking-tight">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 tracking-normal">
                 Doctor Export
               </h3>
               <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">
@@ -318,7 +318,7 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter mb-6 md:mb-8 italic">
+              <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-normaler mb-6 md:mb-8 italic">
                 &quot;Shift Nigeria from reactive care to preventive care.&quot;
               </h2>
               <p className="text-gray-500 font-medium mb-8 leading-relaxed">
@@ -363,7 +363,7 @@ export function LandingPage() {
                   <div className="bg-white p-2 rounded-lg text-emerald-600 shadow-sm border border-emerald-100">
                     <Lock className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <span className="text-base md:text-lg font-bold text-gray-700 uppercase tracking-widest text-emerald-600">
+                  <span className="text-base md:text-lg font-bold text-gray-700 font-medium tracking-wide text-emerald-600">
                     Encrypted &amp; Private
                   </span>
                 </div>
@@ -374,14 +374,14 @@ export function LandingPage() {
               <div className="relative bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-gray-100">
                 <div className="flex items-center justify-between mb-6 md:mb-8">
                   <div>
-                    <p className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">
+                    <p className="text-sm text-opacity-80 md:text-xs font-semibold text-gray-400 font-medium tracking-wide">
                       Resilience Score
                     </p>
-                    <p className="text-3xl md:text-4xl font-black text-emerald-600">
+                    <p className="text-3xl md:text-4xl font-semibold text-emerald-600">
                       88.4
                     </p>
                   </div>
-                  <div className="bg-emerald-50 px-3 py-1 rounded-full text-[10px] font-black text-emerald-700 uppercase tracking-widest">
+                  <div className="bg-emerald-50 px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-emerald-700 font-medium tracking-wide">
                     Optimal
                   </div>
                 </div>
@@ -398,18 +398,18 @@ export function LandingPage() {
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div className="bg-amber-50 border border-amber-100 p-3 rounded-2xl">
-                    <p className="text-[10px] font-black text-amber-700 uppercase tracking-widest">
+                    <p className="text-sm text-opacity-80 font-semibold text-amber-700 font-medium tracking-wide">
                       Drift Pattern
                     </p>
-                    <p className="text-sm font-black text-amber-900 mt-1">
+                    <p className="text-sm font-semibold text-amber-900 mt-1">
                       Stress + Low Sleep
                     </p>
                   </div>
                   <div className="bg-blue-50 border border-blue-100 p-3 rounded-2xl">
-                    <p className="text-[10px] font-black text-blue-700 uppercase tracking-widest">
+                    <p className="text-sm text-opacity-80 font-semibold text-blue-700 font-medium tracking-wide">
                       Recommendation
                     </p>
-                    <p className="text-sm font-black text-blue-900 mt-1">
+                    <p className="text-sm font-semibold text-blue-900 mt-1">
                       Check BP readings
                     </p>
                   </div>
@@ -430,7 +430,7 @@ export function LandingPage() {
       <section className="py-16 md:py-20 px-4 md:px-6 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-normaler mb-4">
               4 Drift Patterns We Monitor
             </h2>
             <p className="text-gray-400 font-medium max-w-xl mx-auto">
@@ -474,11 +474,11 @@ export function LandingPage() {
                 className={`border rounded-3xl p-6 ${p.color}`}
               >
                 <div className="text-4xl mb-4">{p.icon}</div>
-                <h3 className="text-lg font-black mb-3">{p.title}</h3>
+                <h3 className="text-lg font-semibold mb-3">{p.title}</h3>
                 <p className="text-sm text-gray-400 font-medium mb-4 leading-relaxed">
                   {p.pattern}
                 </p>
-                <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">
+                <p className="text-xs font-semibold text-emerald-400 font-medium tracking-wide">
                   {p.action}
                 </p>
               </div>
@@ -492,18 +492,18 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-2">
             <Activity className="w-6 h-6 text-emerald-600" />
-            <span className="text-xl font-black tracking-tighter text-gray-900">
+            <span className="text-xl font-semibold tracking-normaler text-gray-900">
               DRIFTCARE{" "}
               <span className="text-emerald-600 text-sm tracking-widest">
                 NG
               </span>
             </span>
           </div>
-          <p className="text-gray-400 text-xs md:text-sm font-bold uppercase tracking-widest text-center">
+          <p className="text-gray-400 text-xs md:text-sm font-medium font-medium tracking-wide text-center">
             © 2026 DriftCare NG · AI-Powered Preventive Health · Built for
             Nigeria.
           </p>
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+          <p className="text-sm text-opacity-80 text-gray-400 font-medium font-medium tracking-wide">
             NOT A DIAGNOSTIC TOOL
           </p>
         </div>

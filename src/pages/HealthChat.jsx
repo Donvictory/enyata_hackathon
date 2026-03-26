@@ -335,12 +335,12 @@ export function HealthChat() {
                       ) : (
                         <User className="w-3 h-3 opacity-50" />
                       )}
-                      <span className="text-[10px] uppercase tracking-wider font-bold opacity-50">
+                      <span className="text-sm text-opacity-80 font-medium tracking-wide font-bold opacity-50">
                         {message.role === "assistant" ? "Companion" : "You"}
                       </span>
                     </div>
                     <p className="text-sm leading-relaxed">{message.content}</p>
-                    <div className={`text-[10px] mt-2 opacity-50 text-right`}>
+                    <div className={`text-sm text-opacity-80 mt-2 opacity-50 text-right`}>
                       {new Date(message.timestamp).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -377,7 +377,7 @@ export function HealthChat() {
         <div className="max-w-2xl mx-auto">
           <Alert className="mb-4 bg-amber-50 border-amber-200 text-amber-800 py-2">
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription className="text-[10px] leading-tight font-medium">
+            <AlertDescription className="text-sm text-opacity-80 leading-tight font-medium">
               Not a medical diagnosis. For emergencies, please call 112 or visit
               a hospital.
             </AlertDescription>

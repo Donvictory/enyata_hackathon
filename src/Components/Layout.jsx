@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useMe } from "../hooks/use-auth";
 import { isAuthenticated } from "../lib/storage";
-import { subscribeUserToPush } from "../lib/push-notifications";
+import { subscribeUserToPush } from "../lib/push-notification";
 
 import { Heart, Home, User, Stethoscope, Bot, Loader2 } from "lucide-react";
 
@@ -62,7 +62,7 @@ export function Layout() {
   const showNav = authenticated && onboarded && !isPublicRoute;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-blue-50 relative overflow-x-hidden">
       {showNav && <Navbar />}
       <main className={showNav ? "pt-24 pb-20" : ""}>
         <Outlet />

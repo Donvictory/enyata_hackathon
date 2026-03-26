@@ -42,10 +42,10 @@ export function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="text-8xl font-black text-gray-900 tracking-tighter mb-2">
+          <div className="text-8xl font-semibold text-gray-900 tracking-normaler mb-2">
             4<span className="text-emerald-500">0</span>4
           </div>
-          <h1 className="text-2xl font-black text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-2xl font-semibold text-gray-900 mb-4 tracking-normal">
             You've drifted off course!
           </h1>
           <p className="text-gray-500 font-medium mb-10 leading-relaxed">
@@ -57,7 +57,7 @@ export function NotFound() {
             <Button
               onClick={() => navigate("/dashboard")}
               size="lg"
-              className="w-full sm:w-auto px-8 h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-100 font-black text-lg transition-all hover:scale-105"
+              className="w-full sm:w-auto px-8 h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-100 font-semibold text-lg transition-all hover:scale-105"
             >
               <Home className="w-5 h-5 mr-3" />
               Go to Dashboard
@@ -66,7 +66,7 @@ export function NotFound() {
               onClick={() => navigate(-1)}
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto px-8 h-14 rounded-2xl border-2 border-gray-100 text-gray-600 hover:bg-white shadow-lg font-black text-lg transition-all"
+              className="w-full sm:w-auto px-8 h-14 rounded-2xl border-2 border-gray-100 text-gray-600 hover:bg-white shadow-lg font-semibold text-lg transition-all"
             >
               Go Back
             </Button>
@@ -74,7 +74,7 @@ export function NotFound() {
         </motion.div>
 
         <div className="mt-12 pt-8 border-t border-gray-100">
-          <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+          <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 font-medium tracking-wide">
             <Map className="w-4 h-4" />
             <span>Health Drift System Fault</span>
           </div>

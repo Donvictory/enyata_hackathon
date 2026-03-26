@@ -30,11 +30,11 @@ export const DoctorReport = ({ data, onClose }) => {
         {/* Header - Clinical Look */}
         <div className="bg-emerald-900 p-8 text-white rounded-t-[2.5rem] sticky top-0 z-10 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-black flex items-center gap-2">
+            <h2 className="text-2xl font-semibold flex items-center gap-2">
               <Stethoscope className="w-8 h-8 text-emerald-400" />
               Clinical Health Summary
             </h2>
-            <p className="text-emerald-200/70 text-sm font-medium mt-1 uppercase tracking-widest">
+            <p className="text-emerald-200/70 text-sm font-medium mt-1 font-medium tracking-wide">
               Standardized SBAR Protocol Report
             </p>
           </div>
@@ -66,7 +66,7 @@ export const DoctorReport = ({ data, onClose }) => {
                 <Calendar className="w-5 h-5 text-gray-400" />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                <p className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide leading-none">
                   Date of Report
                 </p>
                 <p className="text-sm font-bold text-gray-900 mt-1">
@@ -81,7 +81,7 @@ export const DoctorReport = ({ data, onClose }) => {
                 <FileText className="w-5 h-5 text-gray-400" />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                <p className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide leading-none">
                   Record Type
                 </p>
                 <p className="text-sm font-bold text-gray-900 mt-1">
@@ -97,9 +97,9 @@ export const DoctorReport = ({ data, onClose }) => {
             <div className="group">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-blue-100 p-1.5 rounded-lg">
-                  <span className="text-xs font-black text-blue-700">S</span>
+                  <span className="text-xs font-semibold text-blue-700">S</span>
                 </div>
-                <h3 className="font-black text-gray-500 uppercase tracking-widest text-xs">
+                <h3 className="font-semibold text-gray-500 font-medium tracking-wide text-xs">
                   Situation
                 </h3>
               </div>
@@ -112,9 +112,9 @@ export const DoctorReport = ({ data, onClose }) => {
             <div className="group">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-purple-100 p-1.5 rounded-lg">
-                  <span className="text-xs font-black text-purple-700">B</span>
+                  <span className="text-xs font-semibold text-purple-700">B</span>
                 </div>
-                <h3 className="font-black text-gray-500 uppercase tracking-widest text-xs">
+                <h3 className="font-semibold text-gray-500 font-medium tracking-wide text-xs">
                   Background
                 </h3>
               </div>
@@ -127,9 +127,9 @@ export const DoctorReport = ({ data, onClose }) => {
             <div className="group">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-orange-100 p-1.5 rounded-lg">
-                  <span className="text-xs font-black text-orange-700">A</span>
+                  <span className="text-xs font-semibold text-orange-700">A</span>
                 </div>
-                <h3 className="font-black text-gray-500 uppercase tracking-widest text-xs">
+                <h3 className="font-semibold text-gray-500 font-medium tracking-wide text-xs">
                   Assessment
                 </h3>
               </div>
@@ -142,13 +142,13 @@ export const DoctorReport = ({ data, onClose }) => {
             <div className="group">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-emerald-100 p-1.5 rounded-lg">
-                  <span className="text-xs font-black text-emerald-700">R</span>
+                  <span className="text-xs font-semibold text-emerald-700">R</span>
                 </div>
-                <h3 className="font-black text-gray-500 uppercase tracking-widest text-xs">
+                <h3 className="font-semibold text-gray-500 font-medium tracking-wide text-xs">
                   Recommendation
                 </h3>
               </div>
-              <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 text-emerald-900 font-black leading-relaxed">
+              <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 text-emerald-900 font-semibold leading-relaxed">
                 {data.recommendation}
               </div>
             </div>
@@ -160,14 +160,14 @@ export const DoctorReport = ({ data, onClose }) => {
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+              <span className="text-sm text-opacity-80 font-semibold text-emerald-600 font-medium tracking-wide">
                 FHIR Compliant Output
               </span>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handlePrint}
-                className="bg-gray-900 text-white px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+                className="bg-gray-900 text-white px-6 py-3 rounded-2xl font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
               >
                 <Download className="w-4 h-4" />
                 Export PDF

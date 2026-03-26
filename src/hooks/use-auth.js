@@ -1,26 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../lib/api-client";
 import {
   getUserAuth,
   saveUserAuth,
   clearTokens,
   isAuthenticated,
+  logout as storageLogout,
 } from "../lib/storage";
-
-// ─── Register ──────────────────────────────────────────────────────────────────
 
 export const useRegister = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (userData) => {
-      const response = await apiClient.post("/users/register", userData);
-      return response.data;
+      await new Promise(r => setTimeout(r, 600));
+      const user = { id: Date.now().toString(), ...userData };
+      return { user };
     },
     onSuccess: (data) => {
-      const user = data.data?.user || data.user;
-      // Tokens are already set as httpOnly cookies by the server.
-      // We only persist the user object locally for offline / cold-start reads.
+      const user = data.user;
       if (user) {
         saveUserAuth(user);
         queryClient.setQueryData(["me"], user);
@@ -28,19 +25,18 @@ export const useRegister = () => {
     },
   });
 };
-
-// ─── Login ─────────────────────────────────────────────────────────────────────
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (credentials) => {
-      const response = await apiClient.post("/users/login", credentials);
-      return response.data;
+      await new Promise(r => setTimeout(r, 600));
+      const existingUser = getUserAuth();
+      const user = existingUser || { id: "1", name: "Demo User", email: credentials.email };
+      return { user };
     },
     onSuccess: (data) => {
-      const user = data.data?.user || data.user;
-      // Tokens are already set as httpOnly cookies by the server.
+      const user = data.user;
       if (user) {
         saveUserAuth(user);
         queryClient.setQueryData(["me"], user);
@@ -49,66 +45,27 @@ export const useLogin = () => {
   });
 };
 
-// ─── "Who am I?" ───────────────────────────────────────────────────────────────
-//
-// This query is the source of truth for the currently authenticated user.
-// The auth guards (ProtectedRoute / GuestRoute) consume it.
-
 export const useMe = () => {
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      try {
-        const response = await apiClient.get("/users/profile");
-        const data = response.data?.data;
-        let backendUser =
-          data?.user || (response.data?.user ? response.data : null);
-
-        // Fallback: if /profile didn't return the expected shape, try /me
-        if (!backendUser) {
-          const meResponse = await apiClient.get("/users/me");
-          backendUser = meResponse.data?.data?.user || meResponse.data?.user;
-        }
-
-        if (backendUser) {
-          const enrichedUser = {
-            id: backendUser._id || backendUser.id,
-            ...backendUser,
-            ...data?.stats,
-          };
-          saveUserAuth(enrichedUser);
-          return enrichedUser;
-        }
-
-        // No backend user returned
-        return null;
-      } catch (error) {
-        if (error.response?.status === 401) {
-          // Access token expired or missing — the interceptor will handle refresh.
-          // Return null so guards can redirect.
-          clearTokens();
-          return null;
-        }
-        // Network / server errors: return null
-        return null;
-      }
+      return getUserAuth();
     },
-    // Only run this query when the browser has the session hint cookie.
-    // This avoids an unnecessary 401 round-trip on first load for guests.
     enabled: isAuthenticated(),
     retry: 1,
-    staleTime: 0, // Always verify session on mount/navigation
+    staleTime: 0,
   });
 };
-
-// ─── Update Profile ────────────────────────────────────────────────────────────
 
 export const useUpdateMe = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data) => {
-      const response = await apiClient.patch("/users/me", data);
-      return response.data;
+      await new Promise(r => setTimeout(r, 300));
+      const existingUser = getUserAuth();
+      const user = { ...existingUser, ...data };
+      saveUserAuth(user);
+      return { user };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -116,20 +73,14 @@ export const useUpdateMe = () => {
   });
 };
 
-// ─── Logout ────────────────────────────────────────────────────────────────────
-
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: async () => {
-      // Ask the server to clear the httpOnly cookies
-      await apiClient.post("/users/logout");
+      storageLogout();
     },
     onSettled: () => {
-      // Clear the client-side hint cookie + legacy localStorage
-      clearTokens();
-      // Wipe the React Query auth cache so all guards immediately redirect
       queryClient.setQueryData(["me"], null);
       queryClient.removeQueries({ queryKey: ["me"] });
       navigate("/login", { replace: true });
@@ -137,14 +88,16 @@ export const useLogout = () => {
   });
 };
 
-// ─── Onboard ───────────────────────────────────────────────────────────────────
-
 export const useOnboard = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data) => {
-      const response = await apiClient.post("/users/onboard", data);
-      return response.data;
+      await new Promise(r => setTimeout(r, 500));
+      const existingUser = getUserAuth();
+      const user = { ...existingUser, ...data, isOnboarded: true };
+      import("../lib/storage").then(s => s.saveUserProfile(user));
+      saveUserAuth(user);
+      return { user };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -152,13 +105,11 @@ export const useOnboard = () => {
   });
 };
 
-// ─── Delete Account ────────────────────────────────────────────────────────────
-
 export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      await apiClient.delete("/users/me");
+      await new Promise(r => setTimeout(r, 500));
     },
     onSuccess: () => {
       localStorage.clear();

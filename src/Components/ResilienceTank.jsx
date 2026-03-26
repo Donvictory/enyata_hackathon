@@ -83,7 +83,7 @@ export function ResilienceTank({ score }) {
           {[100, 75, 50, 25, 0].map((mark) => (
             <div key={mark} className="flex items-center px-1.5">
               <div className="h-px w-2.5 bg-gray-300/60 rounded" />
-              <span className="text-[8px] text-gray-400 ml-1">{mark}</span>
+              <span className="text-xs text-opacity-80 text-gray-400 ml-1">{mark}</span>
             </div>
           ))}
         </div>

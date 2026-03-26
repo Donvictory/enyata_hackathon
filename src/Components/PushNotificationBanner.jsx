@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Bell, X, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { subscribeUserToPush } from "../lib/push-notifications";
+import { subscribeUserToPush } from "../lib/push-notification";
 import { toast } from "sonner";
 
 export function PushNotificationBanner() {
@@ -55,7 +55,7 @@ export function PushNotificationBanner() {
                 <Bell className="w-6 h-6 text-emerald-400 animate-pulse" />
               </div>
               <div>
-                <h4 className="font-black text-lg flex items-center gap-2 justify-center md:justify-start">
+                <h4 className="font-semibold text-lg flex items-center gap-2 justify-center md:justify-start">
                   Enable Health Drift Alerts
                   <Sparkles className="w-4 h-4 text-emerald-400" />
                 </h4>
@@ -68,7 +68,7 @@ export function PushNotificationBanner() {
             <div className="flex items-center gap-3 w-full md:w-auto">
               <Button
                 onClick={handleEnable}
-                className="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-xl px-8"
+                className="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl px-8"
               >
                 Enable
               </Button>

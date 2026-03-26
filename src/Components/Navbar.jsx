@@ -56,10 +56,10 @@ export function Navbar() {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full border-2 border-white animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tighter text-gray-900 leading-none">
+              <span className="text-xl font-semibold tracking-normaler text-gray-900 leading-none">
                 DRIFT<span className="text-emerald-600">CARE</span>
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-0.5">
+              <span className="text-sm text-opacity-80 font-bold text-gray-400 font-medium tracking-wide mt-0.5">
                 Next-Gen Health
               </span>
             </div>
@@ -80,7 +80,7 @@ export function Navbar() {
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-2 right-2 w-4 h-4 bg-red-500 text-[10px] font-black text-white rounded-full flex items-center justify-center border-2 border-white">
+                    <span className="absolute top-2 right-2 w-4 h-4 bg-red-500 text-sm text-opacity-80 font-semibold text-white rounded-full flex items-center justify-center border-2 border-white">
                       {unreadCount}
                     </span>
                   )}
@@ -92,10 +92,10 @@ export function Navbar() {
               >
                 <div className="p-5 border-b border-gray-100 bg-emerald-50/30 flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-black text-gray-900">
+                    <h3 className="text-sm font-semibold text-gray-900">
                       Notifications
                     </h3>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <p className="text-sm text-opacity-80 font-bold text-gray-400 font-medium tracking-wide">
                       Health Alerts & Reminders
                     </p>
                   </div>
@@ -137,13 +137,13 @@ export function Navbar() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-black text-gray-900 truncate">
+                            <div className="text-xs font-semibold text-gray-900 truncate">
                               {n.title}
                             </div>
                             <p className="text-[11px] font-medium text-gray-500 leading-snug mt-0.5">
                               {n.message}
                             </p>
-                            <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tight mt-2 flex items-center gap-1.5">
+                            <div className="text-xs text-opacity-80 font-bold text-gray-400 uppercase tracking-normal mt-2 flex items-center gap-1.5">
                               <span className="w-1 h-1 rounded-full bg-gray-300" />
                               {new Date(n.timestamp).toLocaleTimeString([], {
                                 hour: "2-digit",
@@ -169,7 +169,7 @@ export function Navbar() {
                 <div className="p-4 bg-gray-50/50 border-t border-gray-100">
                   <Button
                     onClick={requestPushPermission}
-                    className="w-full h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-[11px] font-black uppercase tracking-widest shadow-lg shadow-emerald-100"
+                    className="w-full h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-[11px] font-semibold font-medium tracking-wide shadow-lg shadow-emerald-100"
                   >
                     Enable Push Alerts
                   </Button>

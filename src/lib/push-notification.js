@@ -1,4 +1,4 @@
-import apiClient from "./api-client";
+// Mocked push notification sync
 
 /**
  * Utility to convert VAPID public key
@@ -59,9 +59,5 @@ export async function subscribeUserToPush() {
  * Sync subscription object with backend
  */
 async function syncSubscriptionWithBackend(subscription) {
-  try {
-    await apiClient.post("/users/subscribe-notifications", { subscription });
-  } catch (error) {
-    console.error("Failed to sync push subscription with backend:", error);
-  }
+  console.log("Mock: synced push subscription locally");
 }

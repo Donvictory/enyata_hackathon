@@ -1,16 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
-import { Input } from "../Components/ui/input";
-import { Label } from "../Components/ui/label";
-import { Button } from "../Components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../Components/ui/select";
-import { Checkbox } from "../Components/ui/checkbox";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -18,599 +9,468 @@ import {
   CardHeader,
   CardTitle,
 } from "../Components/ui/card";
-import { saveUserProfile, calculateBMI, getUserAuth } from "../lib/storage";
-import { useOnboard, useMe } from "../hooks/use-auth";
+import { Button } from "../Components/ui/button";
+import { Alert, AlertDescription } from "../Components/ui/alert";
 import {
-  Heart,
-  Sparkles,
+  getUserProfile,
+  getDailyCheckIns,
+  getPoints,
+  logout,
+} from "../lib/storage";
+import {
   User,
   MapPin,
   Activity,
-  Stethoscope,
-  ChevronRight,
-  ShieldCheck,
-  ChevronLeft,
-  Loader2,
+  Calendar,
+  Heart,
+  Trash2,
+  Shield,
+  Edit,
+  Award,
+  LogOut,
+  Sparkles,
+  Rocket,
+  Globe,
+  Database,
 } from "lucide-react";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../Components/ui/alert-dialog";
+import { motion } from "framer-motion";
 
-const nigerianStates = [
-  "Lagos",
-  "Abuja",
-  "Kano",
-  "Rivers",
-  "Oyo",
-  "Kaduna",
-  "Ogun",
-  "Anambra",
-  "Delta",
-  "Edo",
-  "Enugu",
-  "Imo",
-  "Kwara",
-  "Ondo",
-  "Osun",
-  "Plateau",
-  "Bayelsa",
-  "Cross River",
-];
+import { useMe, useLogout, useDeleteAccount } from "../hooks/use-auth";
+import { useDailyCheckIns } from "../hooks/use-daily-check-in";
 
-const commonConditions = [
-  "None",
-  "Hypertension",
-  "Diabetes",
-  "Asthma",
-  "Heart Disease",
-  "Malaria (Recurring)",
-  "Sickle Cell",
-];
-
-const familyHistoryOptions = [
-  "None",
-  "Hypertension",
-  "Diabetes",
-  "Heart Disease",
-  "Stroke",
-  "Cancer",
-  "Sickle Cell",
-];
-
-export function Onboarding() {
+export function Profile() {
   const navigate = useNavigate();
-  const onboardMutation = useOnboard();
-  const { data: user, isLoading: userLoading } = useMe();
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    age: "",
-    gender: "",
-    height: "",
-    weight: "",
-    city: "",
-    state: "",
-    phone: "",
-    knownConditions: [],
-    familyHistory: [],
-  });
+  const { data: profile, isLoading: isProfileLoading } = useMe();
+  const logoutMutation = useLogout();
+  const deleteAccountMutation = useDeleteAccount();
 
-  useEffect(() => {
-    if (!userLoading && user && user.isOnboarded) {
-      navigate("/dashboard");
-    }
-  }, [user, userLoading, navigate]);
+  const handleClearData = () => {
+    deleteAccountMutation.mutate(null, {
+      onSuccess: () => {
+        toast.success("Account and all records purged. Hope to see you again!");
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      },
+      onError: () => {
+        toast.error("Process failed. Please try again later.");
+      },
+    });
+  };
 
-  if (userLoading) {
+  const handleLogout = () => {
+    logoutMutation.mutate(null, {
+      onSuccess: () => {
+        toast.success("Logged out successfully");
+        navigate("/login");
+      },
+    });
+  };
+
+  if (isProfileLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fafbfc]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
-          <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
-            Loading Protocol...
+          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-emerald-600 font-bold animate-pulse">
+            Loading Profile...
           </p>
         </div>
       </div>
     );
   }
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (
-        !formData.age ||
-        !formData.gender ||
-        !formData.height ||
-        !formData.weight
-      ) {
-        toast.error("Please fill in all basic info");
-        return;
-      }
-    }
-    if (step === 2) {
-      if (!formData.city || !formData.state) {
-        toast.error("Please select your location");
-        return;
-      }
-    }
-    setStep(step + 1);
-  };
+  if (!profile) {
+    navigate("/login");
+    return null;
+  }
 
-  const handleComplete = () => {
-    const bmi = calculateBMI(
-      parseFloat(formData.weight),
-      parseFloat(formData.height),
-    );
-
-    // Map frontend labels to backend enums exactly
-    const conditionMap = {
-      None: "NONE",
-      Hypertension: "HYPERTENSION",
-      Diabetes: "DIABETES",
-      Asthma: "ASTHMA",
-      "Heart Disease": "HEART DISEASE",
-      "Malaria (Recurring)": "MALARIA",
-      "Sickle Cell": "SICKLE CELL",
-    };
-
-    const historyMap = {
-      None: "NONE",
-      Hypertension: "HYPERTENSION",
-      Diabetes: "DIABETES",
-      "Heart Disease": "HEART DISEASE",
-      Stroke: "STROKE",
-      Cancer: "CANCER",
-      "Sickle Cell": "SICKLE CELL",
-    };
-
-    const payload = {
-      phoneNumber: formData.phone,
-      age: parseInt(formData.age),
-      gender: formData.gender.toUpperCase(),
-      height: parseFloat(formData.height),
-      weight: parseFloat(formData.weight),
-      city: formData.city,
-      state: formData.state,
-      healthConditions: formData.knownConditions
-        .map((c) => conditionMap[c] || "NONE")
-        .filter((c) => c !== "NONE"),
-      familyHealthHistory: formData.familyHistory
-        .map((h) => historyMap[h] || "NONE")
-        .filter((h) => h !== "NONE"),
-    };
-
-    onboardMutation.mutate(payload, {
-      onSuccess: (response) => {
-        const updatedUser = response.data?.user || response.user;
-        saveUserProfile({
-          ...updatedUser,
-          bmi,
-        });
-        toast.success("Profile synchronized securely! Welcome! 🎉");
-        navigate("/check-in");
-      },
-      onError: (error) => {
-        console.error("Sync failed:", error);
-        toast.error(
-          error.response?.data?.message ||
-            "Server synchronization failed, but your data is saved locally.",
-        );
-        // Fallback save to local storage
-        const auth = getUserAuth();
-        saveUserProfile({
-          ...auth,
-          ...payload,
-          bmi,
-        });
-        navigate("/check-in");
-      },
-    });
-  };
-
-  const toggleCondition = (condition) => {
-    setFormData((prev) => {
-      let newConditions = [...prev.knownConditions];
-      if (condition === "None") {
-        newConditions = ["None"];
-      } else {
-        newConditions = newConditions.filter((c) => c !== "None");
-        if (newConditions.includes(condition)) {
-          newConditions = newConditions.filter((c) => c !== condition);
-        } else {
-          newConditions.push(condition);
-        }
-        if (newConditions.length === 0) newConditions = ["None"];
-      }
-      return { ...prev, knownConditions: newConditions };
-    });
-  };
-
-  const toggleFamilyHistory = (item) => {
-    setFormData((prev) => {
-      let newHistory = [...prev.familyHistory];
-      if (item === "None") {
-        newHistory = ["None"];
-      } else {
-        newHistory = newHistory.filter((h) => h !== "None");
-        if (newHistory.includes(item)) {
-          newHistory = newHistory.filter((h) => h !== item);
-        } else {
-          newHistory.push(item);
-        }
-        if (newHistory.length === 0) newHistory = ["None"];
-      }
-      return { ...prev, familyHistory: newHistory };
-    });
-  };
+  const joinDate = new Date(profile.createdAt).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] flex flex-col items-center justify-center p-4 md:p-8 pb-32">
-      {/* Background Decor */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-100/30 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-50/20 blur-[120px] rounded-full" />
-      </div>
-
-      <div className="w-full max-w-2xl">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3 px-2">
-            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">
-              Onboarding Protocol
-            </span>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-              Sequence {step} of 3
-            </span>
+    <div className="min-h-screen p-4 pb-24 bg-gray-50/50">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center space-y-6 pt-10"
+        >
+          <div className="relative inline-block">
+            <div className="w-28 h-28 bg-gradient-to-br from-emerald-400 to-blue-600 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-emerald-200 ring-4 ring-white">
+              <User className="w-14 h-14 text-white" />
+            </div>
+            <div className="absolute -bottom-2 -right-2 bg-white p-2.5 rounded-2xl shadow-lg border border-gray-100">
+              <Shield className="w-5 h-5 text-emerald-500" />
+            </div>
           </div>
-          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${(step / 3) * 100}%` }}
-              className="h-full bg-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.3)] transition-all duration-500"
-            />
+          <div>
+            <h1 className="text-4xl font-semibold text-gray-900 tracking-normal">
+              {profile.name}
+            </h1>
+            <p className="text-gray-500 font-bold text-lg">{profile.email}</p>
+            <div className="flex items-center justify-center gap-2 mt-2 text-xs font-semibold text-gray-400 font-medium tracking-wide">
+              <Calendar className="w-3 h-3" /> Joined {joinDate}
+            </div>
           </div>
-        </div>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
+          <Button
+            onClick={() => navigate("/edit-profile")}
+            variant="outline"
+            className="rounded-2xl border-gray-200 px-8 py-6 h-auto shadow-sm hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 font-bold transition-all text-base"
           >
-            <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.05)] bg-white/80 backdrop-blur-xl rounded-[2.5rem] overflow-hidden">
-              <CardHeader className="text-center pt-10 pb-2">
-                <div className="flex justify-center mb-6">
-                  <div className="relative">
-                    <div className="bg-emerald-50 w-20 h-20 rounded-4xl flex items-center justify-center shadow-sm">
-                      <Heart className="w-10 h-10 text-emerald-600 fill-emerald-600" />
-                    </div>
-                    <div className="absolute -top-2 -right-2 bg-white p-2 rounded-2xl shadow-lg border border-gray-100">
-                      <Sparkles className="w-5 h-5 text-yellow-500" />
-                    </div>
-                  </div>
+            <Edit className="w-5 h-5 mr-3" />
+            Edit Profile
+          </Button>
+        </motion.div>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              icon: Calendar,
+              color: "text-emerald-600",
+              bg: "bg-emerald-50",
+              label: "Check-ins",
+              val: profile?.totalCheckIns ?? 0,
+            },
+            {
+              icon: Activity,
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+              label: "Current BMI",
+              val: profile.bmi || "0.0",
+              sub: `${profile.bmiCategory || "Normal"} (${profile.weight}kg · ${profile.height}cm)`,
+            },
+            {
+              icon: Heart,
+              color: "text-red-600",
+              bg: "bg-red-50",
+              label: "Years Old",
+              val: profile.age,
+            },
+            {
+              icon: Award,
+              color: "text-yellow-600",
+              bg: "bg-yellow-50",
+              label: "Health XP",
+              val: profile?.healthPoints ?? 0,
+            },
+          ].map((stat, i) => (
+            <Card
+              key={i}
+              className="border-none shadow-xl bg-white rounded-3xl overflow-hidden"
+            >
+              <CardContent className="pt-8 text-center px-4 pb-8">
+                <div
+                  className={`${stat.bg} ${stat.color} w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm`}
+                >
+                  <stat.icon className="w-7 h-7" />
                 </div>
-                <CardTitle className="text-3xl font-black text-gray-900 tracking-tight">
-                  Welcome to DriftCare NG
-                </CardTitle>
-                <CardDescription className="text-base font-medium px-6">
-                  Your trusted health companion. Let's get to know you a bit.
-                </CardDescription>
-                <div className="flex items-center justify-center gap-2 mt-4 text-[10px] font-black text-emerald-600 uppercase tracking-widest">
-                  <ShieldCheck className="w-4 h-4" /> Data Secured & Encrypted
+                <div className="text-3xl font-semibold text-gray-900">
+                  {stat.val}
                 </div>
-              </CardHeader>
-
-              <CardContent className="p-8 md:p-12">
-                {/* Step 1: Basic Info */}
-                {step === 1 && (
-                  <div className="space-y-8">
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="age"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                        >
-                          How old are you?
-                        </Label>
-                        <div className="relative">
-                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                          <Input
-                            id="age"
-                            type="number"
-                            placeholder="e.g., 28"
-                            className="h-14 pl-12 rounded-xl border-2 font-bold focus:ring-emerald-500"
-                            value={formData.age}
-                            onChange={(e) =>
-                              setFormData({ ...formData, age: e.target.value })
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="gender"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                        >
-                          Gender
-                        </Label>
-                        <Select
-                          value={formData.gender}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, gender: value })
-                          }
-                        >
-                          <SelectTrigger className="h-14 rounded-xl border-2 font-bold focus:ring-emerald-500">
-                            <SelectValue placeholder="Select gender" />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl border-none shadow-2xl">
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor="height"
-                            className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                          >
-                            Height (cm)
-                          </Label>
-                          <Input
-                            id="height"
-                            type="number"
-                            placeholder="e.g., 170"
-                            className="h-14 rounded-xl border-2 font-bold focus:ring-emerald-500"
-                            value={formData.height}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                height: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor="weight"
-                            className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                          >
-                            Weight (kg)
-                          </Label>
-                          <Input
-                            id="weight"
-                            type="number"
-                            placeholder="e.g., 75"
-                            className="h-14 rounded-xl border-2 font-bold focus:ring-emerald-500"
-                            value={formData.weight}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                weight: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      onClick={handleNext}
-                      className="w-full h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-black text-lg transition-all active:scale-95 shadow-xl"
-                    >
-                      Next Step <ChevronRight className="ml-2 w-5 h-5" />
-                    </Button>
+                {stat.sub && (
+                  <div className="text-sm text-opacity-80 font-semibold text-blue-500 uppercase tracking-normal -mt-1">
+                    {stat.sub}
                   </div>
                 )}
-
-                {/* Step 2: Location */}
-                {step === 2 && (
-                  <div className="space-y-8">
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="state"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                        >
-                          Which state are you in?
-                        </Label>
-                        <Select
-                          value={formData.state}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, state: value })
-                          }
-                        >
-                          <SelectTrigger className="h-14 rounded-xl border-2 font-bold">
-                            <SelectValue placeholder="Select state" />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl border-none shadow-2xl max-h-[300px]">
-                            {nigerianStates.map((state) => (
-                              <SelectItem key={state} value={state}>
-                                {state}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="city"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                        >
-                          City/Town
-                        </Label>
-                        <div className="relative">
-                          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                          <Input
-                            id="city"
-                            placeholder="e.g., Ikeja, Lekki, Wuse"
-                            className="h-14 pl-12 rounded-xl border-2 font-bold"
-                            value={formData.city}
-                            onChange={(e) =>
-                              setFormData({ ...formData, city: e.target.value })
-                            }
-                          />
-                        </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2 pl-1">
-                          We use this for local environmental context.
-                        </p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="phone"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
-                        >
-                          Phone Number (Optional)
-                        </Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="e.g., 080 1234 5678"
-                          className="h-14 rounded-xl border-2 font-bold"
-                          value={formData.phone}
-                          onChange={(e) =>
-                            setFormData({ ...formData, phone: e.target.value })
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button
-                        onClick={() => setStep(1)}
-                        variant="outline"
-                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 uppercase tracking-widest text-xs"
-                      >
-                        <ChevronLeft className="mr-2 w-4 h-4" /> Back
-                      </Button>
-                      <Button
-                        onClick={handleNext}
-                        className="flex-2 h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-black text-lg transition-all active:scale-95 shadow-xl"
-                      >
-                        Next <ChevronRight className="ml-2 w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: Health History */}
-                {step === 3 && (
-                  <div className="space-y-8">
-                    <div className="space-y-8">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Activity className="w-5 h-5 text-emerald-600" />
-                          <Label className="text-xs font-black uppercase text-gray-900 tracking-widest">
-                            Personal Health Records
-                          </Label>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {commonConditions.map((condition) => (
-                            <div
-                              key={condition}
-                              onClick={() => toggleCondition(condition)}
-                              className={`p-4 rounded-xl border-2 flex items-center gap-3 cursor-pointer transition-all ${
-                                formData.knownConditions.includes(condition)
-                                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
-                                  : "bg-white border-gray-100 text-gray-500 hover:border-emerald-100"
-                              }`}
-                            >
-                              <Checkbox
-                                id={condition}
-                                checked={formData.knownConditions.includes(
-                                  condition,
-                                )}
-                                onCheckedChange={() =>
-                                  toggleCondition(condition)
-                                }
-                                className="w-5 h-5 border-2"
-                              />
-                              <Label
-                                htmlFor={condition}
-                                className="cursor-pointer font-bold text-sm"
-                              >
-                                {condition}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Stethoscope className="w-5 h-5 text-emerald-600" />
-                          <Label className="text-xs font-black uppercase text-gray-900 tracking-widest">
-                            Family Genetic History
-                          </Label>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {familyHistoryOptions.map((item) => (
-                            <div
-                              key={item}
-                              onClick={() => toggleFamilyHistory(item)}
-                              className={`p-4 rounded-xl border-2 flex items-center gap-3 cursor-pointer transition-all ${
-                                formData.familyHistory.includes(item)
-                                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
-                                  : "bg-white border-gray-100 text-gray-500 hover:border-emerald-100"
-                              }`}
-                            >
-                              <Checkbox
-                                id={`family-${item}`}
-                                checked={formData.familyHistory.includes(item)}
-                                onCheckedChange={() =>
-                                  toggleFamilyHistory(item)
-                                }
-                                className="w-5 h-5 border-2"
-                              />
-                              <Label
-                                htmlFor={`family-${item}`}
-                                className="cursor-pointer font-bold text-sm"
-                              >
-                                {item}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button
-                        onClick={() => setStep(2)}
-                        variant="outline"
-                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 uppercase tracking-widest text-xs"
-                      >
-                        <ChevronLeft className="mr-2 w-4 h-4" /> Back
-                      </Button>
-                      <Button
-                        onClick={handleComplete}
-                        disabled={onboardMutation.isPending}
-                        className="flex-2 h-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-lg transition-all active:scale-95 shadow-xl shadow-emerald-100 uppercase tracking-wider"
-                      >
-                        {onboardMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            Securing Data...
-                          </>
-                        ) : (
-                          "Let's Go! 🚀"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <div className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide mt-1">
+                  {stat.label}
+                </div>
               </CardContent>
             </Card>
-          </motion.div>
-        </AnimatePresence>
+          ))}
+        </div>
 
-        <p className="text-[10px] text-center font-bold text-gray-400 uppercase tracking-[0.2em] pt-8">
-          By proceeding, you agree to our Medical Data Protocol.
-        </p>
+        {/* Info Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="bg-emerald-50/30 border-b border-gray-50 p-8">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                Biological Identity
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              {[
+                { label: "Full Name", val: profile.name },
+                { label: "Phone", val: profile.phoneNumber || "Not provided" },
+                { label: "Biological Sex", val: profile.gender, cap: true },
+                { label: "Height", val: `${profile.height} cm` },
+                { label: "Weight", val: `${profile.weight} kg` },
+                { label: "Location", val: `${profile.city}, ${profile.state}` },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                >
+                  <span className="text-xs font-semibold text-gray-400 font-medium tracking-wide">
+                    {item.label}
+                  </span>
+                  <span
+                    className={`text-sm font-semibold text-gray-700 ${item.cap ? "capitalize" : ""}`}
+                  >
+                    {item.val}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="bg-blue-50/30 border-b border-gray-50 p-8">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                Medical Backdrop
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="space-y-4">
+                <div className="text-xs font-semibold text-gray-400 font-medium tracking-wide">
+                  Known Conditions
+                </div>
+                {profile.healthConditions?.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.healthConditions.map((condition) => (
+                      <span
+                        key={condition}
+                        className="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-semibold border border-red-200 shadow-sm"
+                      >
+                        {condition}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm font-bold text-gray-400 bg-gray-50 p-4 rounded-2xl border border-dashed">
+                    Zero clinical conditions reported
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <div className="text-xs font-semibold text-gray-400 font-medium tracking-wide">
+                  Genomic/Family History
+                </div>
+                {profile.familyHealthHistory?.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.familyHealthHistory.map((item) => (
+                      <span
+                        key={item}
+                        className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200 shadow-sm"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm font-bold text-gray-400 bg-gray-50 p-4 rounded-2xl border border-dashed">
+                    No family predispositions recorded
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Privacy & Mission Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="border-none shadow-xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="p-8 pb-4">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <Shield className="w-6 h-6 text-emerald-200" />
+                Data Sovereign
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 pt-0 space-y-4">
+              <div className="space-y-3">
+                {[
+                  "Local-first architecture",
+                  "End-to-end encrypted storage",
+                  "Zero third-party sharing",
+                  "Full GDPR/NDPR compliance",
+                ].map((text, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                      <ShieldCheckIcon className="w-3 h-3 text-emerald-100" />
+                    </div>
+                    <span className="text-xs font-bold text-emerald-50">
+                      {text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="p-8 pb-4">
+              <CardTitle className="text-xl font-semibold text-gray-900">
+                DriftCare Odyssey
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 pt-0 space-y-4">
+              <p className="text-sm font-bold text-gray-600 leading-relaxed">
+                Nigeria's first AI-powered preventive health system. Our focus
+                is high-fidelity drift detection for earlier clinical
+                intervention.
+              </p>
+              <div className="flex items-center gap-2 pt-2">
+                <div className="bg-emerald-100 px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-emerald-700 uppercase">
+                  Version 1.0.0
+                </div>
+                <div className="bg-blue-100 px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-blue-700 uppercase">
+                  Lagos, NG
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Future Integrations */}
+        <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
+          <CardHeader className="bg-gray-50 p-8">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <Rocket className="w-6 h-6 text-purple-600" />
+              Strategic Horizon
+            </CardTitle>
+            <CardDescription className="text-gray-500 font-medium">
+              Upcoming decentralized health integrations
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                label: "EMR Sync",
+                detail: "Helium Health Integration",
+                icon: Database,
+              },
+              {
+                label: "HMO Direct",
+                detail: "AXA Mansard / Hygeia Connect",
+                icon: Globe,
+              },
+              {
+                label: "Wearables",
+                detail: "Fitbit & Apple Watch SDK",
+                icon: Activity,
+              },
+              {
+                label: "Localization",
+                detail: "Pidgin & Yoruba Voice AI",
+                icon: Heart,
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100"
+              >
+                <div className="bg-white p-3 rounded-xl shadow-sm">
+                  <item.icon className="w-5 h-5 text-gray-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-900 uppercase">
+                    {item.label}
+                  </div>
+                  <div className="text-sm text-opacity-80 font-bold text-gray-400">
+                    {item.detail}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Danger Zone */}
+        <Card className="border-none shadow-2xl shadow-red-100/50 bg-white rounded-[2.5rem] overflow-hidden">
+          <CardHeader className="bg-red-50 p-8">
+            <CardTitle className="text-xl text-red-600 font-semibold">
+              System Termination
+            </CardTitle>
+            <CardDescription className="font-bold text-red-400/80">
+              Irreversible destructive actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 flex flex-col md:flex-row gap-4">
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="flex-1 h-16 rounded-[1.25rem] border-gray-200 font-semibold text-gray-600 hover:bg-gray-50"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Sign Out
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="flex-1 h-16 rounded-[1.25rem] bg-red-600 hover:bg-red-700 font-semibold shadow-xl shadow-red-100"
+                >
+                  <Trash2 className="w-5 h-5 mr-3" />
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="rounded-[2rem] border-none shadow-2xl p-8">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-2xl font-semibold text-gray-900">
+                    Absolute Termination?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-500 font-medium text-base">
+                    You are about to permanently purge your profile,{" "}
+                    {profile?.totalCheckIns ?? 0} records, and all AI insights.
+                    This cannot be recovered.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="pt-6">
+                  <AlertDialogCancel className="rounded-2xl h-12 font-bold border-gray-100">
+                    Keep My History
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleClearData}
+                    className="bg-red-600 hover:bg-red-700 rounded-2xl h-12 font-semibold shadow-lg shadow-red-100"
+                  >
+                    Yes, Purge Everything
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
       </div>
     </div>
+  );
+}
+
+function ShieldCheckIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
   );
 }

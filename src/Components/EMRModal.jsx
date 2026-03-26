@@ -64,7 +64,7 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
               <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4">
                 <Building2 className="w-8 h-8" />
               </div>
-              <h2 className="text-2xl font-black text-gray-900">
+              <h2 className="text-2xl font-semibold text-gray-900">
                 Hospital EMR Sync
               </h2>
               <p className="text-gray-500 font-medium mt-2">
@@ -86,7 +86,7 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
                     <LogIn className="w-6 h-6" />
                   </div>
                   <div className="text-left">
-                    <p className="font-black text-gray-900">{provider.name}</p>
+                    <p className="font-semibold text-gray-900">{provider.name}</p>
                     <p className="text-xs font-medium text-gray-500">
                       {provider.desc}
                     </p>
@@ -114,12 +114,12 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
           >
             <div className="flex items-center gap-2 mb-6 text-emerald-600">
               <Shield className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-widest">
+              <span className="text-sm text-opacity-80 font-semibold font-medium tracking-wide">
                 Secure OAuth Session
               </span>
             </div>
 
-            <h3 className="text-2xl font-black text-gray-900 mb-2">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
               Login to {selected.name}
             </h3>
             <p className="text-gray-500 font-medium mb-6">
@@ -129,13 +129,13 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
 
             <div className="space-y-4 mb-8">
               <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                <p className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide mb-1">
                   Clinic Portal ID
                 </p>
                 <div className="h-2 w-2/3 bg-gray-200 rounded-full animate-pulse" />
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                <p className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide mb-1">
                   Password
                 </p>
                 <div className="h-2 w-1/2 bg-gray-200 rounded-full animate-pulse" />
@@ -144,10 +144,10 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
 
             <button
               onClick={handleFinish}
-              className="w-full py-5 bg-gray-900 text-white rounded-3xl font-black flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+              className="w-full py-5 bg-gray-900 text-white rounded-3xl font-semibold flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
             >
               Verify & Authorize
-              <ExternalLink className="w-5 h-5 font-black" />
+              <ExternalLink className="w-5 h-5 font-semibold" />
             </button>
           </motion.div>
         )}
@@ -167,7 +167,7 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
             >
               <CheckCircle2 className="w-12 h-12" />
             </motion.div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
               Ecosystem Linked!
             </h3>
             <p className="text-gray-500 font-medium">
@@ -178,7 +178,7 @@ export const EMRModal = ({ isOpen, onClose, onConnect }) => {
             <div className="mt-8 flex justify-center">
               <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full border border-emerald-100">
                 <Sparkles className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-black text-emerald-800 uppercase tracking-widest">
+                <span className="text-xs font-semibold text-emerald-800 font-medium tracking-wide">
                   FHIR Active
                 </span>
               </div>

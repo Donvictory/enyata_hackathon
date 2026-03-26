@@ -187,10 +187,10 @@ export function DailyCheckIn() {
       <div className="w-full max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3 px-2">
-            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">
+            <span className="text-sm text-opacity-80 font-semibold text-emerald-600 font-medium tracking-wide">
               Daily Vitals Protocol
             </span>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+            <span className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide">
               Step {step} of 4
             </span>
           </div>
@@ -218,7 +218,7 @@ export function DailyCheckIn() {
                     <Heart className="w-10 h-10 text-emerald-600 fill-emerald-600" />
                   </div>
                 </div>
-                <CardTitle className="text-3xl font-black text-gray-900 tracking-tight">
+                <CardTitle className="text-3xl font-semibold text-gray-900 tracking-normal">
                   Daily Check-In
                 </CardTitle>
                 <CardDescription className="text-base font-medium text-gray-400">
@@ -231,7 +231,7 @@ export function DailyCheckIn() {
                 {step === 1 && (
                   <div className="space-y-10">
                     <div className="text-center">
-                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
+                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-semibold font-medium tracking-wide">
                         1 of 4 • Sleep & Energy
                       </div>
                     </div>
@@ -241,13 +241,18 @@ export function DailyCheckIn() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Moon className="w-5 h-5 text-emerald-600" />
-                            <Label className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            <Label className="text-sm font-semibold text-gray-700">
                               How many hours did you sleep last night?
                             </Label>
                           </div>
-                          <span className="text-2xl font-black text-emerald-600">
-                            {checkInData.hoursSlept}h
-                          </span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-3xl mb-1">
+                              {checkInData.hoursSlept < 4 ? "😫" : checkInData.hoursSlept < 7 ? "🥱" : checkInData.hoursSlept < 9 ? "😊" : "🤩"}
+                            </span>
+                            <span className="text-2xl font-bold text-emerald-600">
+                              {checkInData.hoursSlept}h
+                            </span>
+                          </div>
                         </div>
                         <Slider
                           value={[checkInData.hoursSlept]}
@@ -260,14 +265,13 @@ export function DailyCheckIn() {
                           min={0}
                           max={12}
                           step={0.5}
-                          className="py-4"
+                          className="py-4 cursor-pointer"
                         />
                         {checkInData.hoursSlept < 6 && (
-                          <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 flex items-center gap-3">
+                          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-center gap-3">
                             <span className="text-lg">😴</span>
                             <p className="text-xs font-bold text-orange-700 leading-tight">
-                              That's low, boss. Your body needs rest to stay
-                              sharp.
+                              That's low, boss. Your body needs rest to stay sharp.
                             </p>
                           </div>
                         )}
@@ -277,13 +281,18 @@ export function DailyCheckIn() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Brain className="w-5 h-5 text-emerald-600" />
-                            <Label className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            <Label className="text-sm font-semibold text-gray-700">
                               How's your stress level today?
                             </Label>
                           </div>
-                          <span className="text-2xl font-black text-emerald-600">
-                            {checkInData.stressLevel}/10
-                          </span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-3xl mb-1">
+                              {checkInData.stressLevel < 4 ? "🍃" : checkInData.stressLevel < 7 ? "⚡" : "🔥"}
+                            </span>
+                            <span className="text-2xl font-bold text-emerald-600">
+                              {checkInData.stressLevel}/10
+                            </span>
+                          </div>
                         </div>
                         <Slider
                           value={[checkInData.stressLevel]}
@@ -298,12 +307,12 @@ export function DailyCheckIn() {
                           step={1}
                           className="py-4"
                         />
-                        <div className="flex justify-between text-[10px] font-black text-gray-300 uppercase tracking-widest px-1">
+                        <div className="flex justify-between text-xs font-bold text-gray-400 px-1">
                           <span>Calm</span>
                           <span>Overwhelmed</span>
                         </div>
                         {checkInData.stressLevel >= 8 && (
-                          <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 flex items-center gap-3">
+                          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-center gap-3">
                             <span className="text-lg">🫂</span>
                             <p className="text-xs font-bold text-orange-700 leading-tight">
                               Omo, take it easy. High stress kills slowly.
@@ -316,13 +325,18 @@ export function DailyCheckIn() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Sparkles className="w-5 h-5 text-yellow-500" />
-                            <Label className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            <Label className="text-sm font-semibold text-gray-700">
                               How's your mood right now?
                             </Label>
                           </div>
-                          <span className="text-2xl font-black text-yellow-600">
-                            {checkInData.mood}/10
-                          </span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-3xl mb-1">
+                              {checkInData.mood < 4 ? "😔" : checkInData.mood < 7 ? "😐" : "✨"}
+                            </span>
+                            <span className="text-2xl font-bold text-yellow-600">
+                              {checkInData.mood}/10
+                            </span>
+                          </div>
                         </div>
                         <Slider
                           value={[checkInData.mood]}
@@ -334,7 +348,7 @@ export function DailyCheckIn() {
                           step={1}
                           className="py-4"
                         />
-                        <div className="flex justify-between text-[10px] font-black text-gray-300 uppercase tracking-widest px-1">
+                        <div className="flex justify-between text-xs font-bold text-gray-400 px-1">
                           <span>Low</span>
                           <span>Great</span>
                         </div>
@@ -343,7 +357,7 @@ export function DailyCheckIn() {
 
                     <Button
                       onClick={handleNext}
-                      className="w-full h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-black text-lg transition-all active:scale-95 shadow-xl"
+                      className="w-full h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-semibold text-lg transition-all active:scale-95 shadow-xl"
                     >
                       Next Step <ChevronRight className="ml-2 w-5 h-5" />
                     </Button>
@@ -354,7 +368,7 @@ export function DailyCheckIn() {
                 {step === 2 && (
                   <div className="space-y-10">
                     <div className="text-center">
-                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
+                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-semibold font-medium tracking-wide">
                         2 of 4 • Movement & Water
                       </div>
                     </div>
@@ -364,15 +378,20 @@ export function DailyCheckIn() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Dumbbell className="w-5 h-5 text-emerald-600" />
-                            <Label className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            <Label className="text-sm font-semibold text-gray-700">
                               Did you move your body today?
                             </Label>
                           </div>
-                          <span className="text-2xl font-black text-emerald-600">
-                            {checkInData.physicalActivity}m
-                          </span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-3xl mb-1">
+                              {checkInData.physicalActivity === 0 ? "🪑" : checkInData.physicalActivity < 30 ? "🚶" : checkInData.physicalActivity < 60 ? "🏃" : "💪"}
+                            </span>
+                            <span className="text-2xl font-bold text-emerald-600">
+                              {checkInData.physicalActivity}m
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <p className="text-xs font-bold text-gray-400 mt-1">
                           Walking, gym, dancing, anything counts!
                         </p>
                         <Slider
@@ -386,10 +405,10 @@ export function DailyCheckIn() {
                           min={0}
                           max={120}
                           step={5}
-                          className="py-4"
+                          className="py-4 cursor-pointer"
                         />
                         {checkInData.physicalActivity === 0 && (
-                          <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 flex items-center gap-3">
+                          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-center gap-3">
                             <span className="text-lg">🏃‍♂️</span>
                             <p className="text-xs font-bold text-orange-700 leading-tight">
                               Your body needs movement. Even 10 mins counts!
@@ -397,7 +416,7 @@ export function DailyCheckIn() {
                           </div>
                         )}
                         {checkInData.physicalActivity >= 30 && (
-                          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex items-center gap-3">
+                          <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-center gap-3">
                             <span className="text-lg">💪</span>
                             <p className="text-xs font-bold text-emerald-700 leading-tight">
                               Nice! You're putting in the work.
@@ -410,13 +429,18 @@ export function DailyCheckIn() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Droplet className="w-5 h-5 text-blue-600" />
-                            <Label className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            <Label className="text-sm font-semibold text-gray-700">
                               How many glasses of water today?
                             </Label>
                           </div>
-                          <span className="text-2xl font-black text-blue-600">
-                            {checkInData.waterIntake}
-                          </span>
+                          <div className="flex flex-col items-end">
+                            <span className="text-3xl mb-1">
+                              {checkInData.waterIntake < 3 ? "🌵" : checkInData.waterIntake < 6 ? "🥛" : checkInData.waterIntake < 9 ? "💧" : "🌊"}
+                            </span>
+                            <span className="text-2xl font-bold text-blue-600">
+                              {checkInData.waterIntake}
+                            </span>
+                          </div>
                         </div>
                         <Slider
                           value={[checkInData.waterIntake]}
@@ -429,10 +453,10 @@ export function DailyCheckIn() {
                           min={0}
                           max={12}
                           step={1}
-                          className="py-4"
+                          className="py-4 cursor-pointer"
                         />
                         {checkInData.waterIntake < 4 && (
-                          <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 flex items-center gap-3">
+                          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-center gap-3">
                             <span className="text-lg">💧</span>
                             <p className="text-xs font-bold text-orange-700 leading-tight">
                               Drink more water, bro. Lagos heat is not joking.
@@ -446,13 +470,13 @@ export function DailyCheckIn() {
                       <Button
                         onClick={() => setStep(1)}
                         variant="outline"
-                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 uppercase tracking-widest text-xs"
+                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 font-medium tracking-wide text-xs"
                       >
                         <ChevronLeft className="mr-2 w-4 h-4" /> Back
                       </Button>
                       <Button
                         onClick={handleNext}
-                        className="flex-[2] h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-black text-lg transition-all active:scale-95 shadow-xl"
+                        className="flex-[2] h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-semibold text-lg transition-all active:scale-95 shadow-xl"
                       >
                         Next <ChevronRight className="ml-2 w-5 h-5" />
                       </Button>
@@ -464,14 +488,14 @@ export function DailyCheckIn() {
                 {step === 3 && (
                   <div className="space-y-10">
                     <div className="text-center">
-                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
+                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-semibold font-medium tracking-wide">
                         3 of 4 • Health Status
                       </div>
                     </div>
 
                     <div className="space-y-8">
                       <div className="space-y-4">
-                        <Label className="text-xs font-black uppercase text-gray-400 tracking-widest">
+                        <Label className="text-sm font-medium text-gray-400 tracking-widest">
                           How would you describe your current health status?
                         </Label>
                         <Select
@@ -503,11 +527,11 @@ export function DailyCheckIn() {
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                           <Activity className="w-5 h-5 text-emerald-600" />
-                          <Label className="text-xs font-black uppercase text-gray-900 tracking-widest">
+                          <Label className="text-sm font-medium text-gray-900 tracking-widest">
                             Any symptoms today?
                           </Label>
                         </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <p className="text-sm text-opacity-80 font-bold text-gray-400 font-medium tracking-wide">
                           Select all that apply. If nothing, just tick "None"
                         </p>
                         <div className="grid grid-cols-2 gap-3">
@@ -543,13 +567,13 @@ export function DailyCheckIn() {
                       <Button
                         onClick={() => setStep(2)}
                         variant="outline"
-                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 uppercase tracking-widest text-xs"
+                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 font-medium tracking-wide text-xs"
                       >
                         <ChevronLeft className="mr-2 w-4 h-4" /> Back
                       </Button>
                       <Button
                         onClick={handleNext}
-                        className="flex-[2] h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-black text-lg transition-all active:scale-95 shadow-xl"
+                        className="flex-[2] h-16 rounded-2xl bg-gray-900 hover:bg-black text-white font-semibold text-lg transition-all active:scale-95 shadow-xl"
                       >
                         Next <ChevronRight className="ml-2 w-5 h-5" />
                       </Button>
@@ -561,14 +585,14 @@ export function DailyCheckIn() {
                 {step === 4 && (
                   <div className="space-y-10">
                     <div className="text-center">
-                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
+                      <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-semibold font-medium tracking-wide">
                         4 of 4 • Final Questions
                       </div>
                     </div>
 
                     <div className="space-y-8">
                       <div className="p-6 bg-gray-50 rounded-3xl space-y-4 border border-gray-100">
-                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                        <span className="text-xs font-semibold text-gray-400 font-medium tracking-wide">
                           Quick lifestyle checks (optional)
                         </span>
                         <div className="grid grid-cols-1 gap-4">
@@ -616,11 +640,11 @@ export function DailyCheckIn() {
                       <div className="space-y-4">
                         <Label
                           htmlFor="journal"
-                          className="text-xs font-black uppercase text-gray-400 tracking-widest"
+                          className="text-sm font-medium text-gray-400 tracking-widest"
                         >
                           Anything else on your mind?
                         </Label>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <p className="text-sm text-opacity-80 font-bold text-gray-400 font-medium tracking-wide">
                           Optional. Write down how you're feeling. This stays
                           private.
                         </p>
@@ -639,15 +663,15 @@ export function DailyCheckIn() {
                       </div>
 
                       <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex flex-col gap-2 shadow-sm">
-                        <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-tight">
+                        <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-normal">
                           <CheckCircle2 className="w-4 h-4" /> Secure &
                           Encrypted
                         </div>
-                        <p className="text-[10px] text-emerald-700/80 font-medium">
+                        <p className="text-sm text-opacity-80 text-emerald-700/80 font-medium">
                           Everything you share is encrypted and private. We
                           never share your data.
                         </p>
-                        <div className="mt-1 inline-flex items-center gap-2 bg-white/50 w-fit px-3 py-1 rounded-full text-[10px] font-black text-emerald-700 uppercase">
+                        <div className="mt-1 inline-flex items-center gap-2 bg-white/50 w-fit px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-emerald-700 uppercase">
                           +15 points bonus 🎉
                         </div>
                       </div>
@@ -657,14 +681,14 @@ export function DailyCheckIn() {
                       <Button
                         onClick={() => setStep(3)}
                         variant="outline"
-                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 uppercase tracking-widest text-xs"
+                        className="flex-1 h-16 rounded-2xl border-2 font-bold hover:bg-gray-50 font-medium tracking-wide text-xs"
                       >
                         <ChevronLeft className="mr-2 w-4 h-4" /> Back
                       </Button>
                       <Button
                         onClick={handleComplete}
                         disabled={isSubmitting}
-                        className="flex-[2] h-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-lg transition-all active:scale-95 shadow-xl shadow-emerald-100 uppercase tracking-widest flex items-center justify-center gap-2"
+                        className="flex-[2] h-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-lg transition-all active:scale-95 shadow-xl shadow-emerald-100 font-medium tracking-wide flex items-center justify-center gap-2"
                       >
                         {isSubmitting ? (
                           <>
@@ -685,7 +709,7 @@ export function DailyCheckIn() {
 
         <div className="flex items-center justify-center gap-2 mt-8 opacity-50">
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+          <span className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide">
             Privacy Multi-Factor Enabled
           </span>
         </div>
