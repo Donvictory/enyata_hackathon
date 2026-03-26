@@ -25,24 +25,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const nigerianStates = [
-  "Lagos",
-  "Abuja",
-  "Kano",
-  "Rivers",
-  "Oyo",
-  "Kaduna",
-  "Ogun",
-  "Anambra",
-  "Delta",
-  "Edo",
-  "Enugu",
-  "Imo",
-  "Kwara",
-  "Ondo",
-  "Osun",
-  "Plateau",
-  "Bayelsa",
-  "Cross River",
+  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
 ];
 
 export function EditProfile() {
@@ -65,9 +48,9 @@ export function EditProfile() {
       setFormData({
         name: profile.name || "",
         email: profile.email || "",
-        phone: profile.phone || "",
+        phone: profile.phoneNumber || profile.phone || "",
         age: profile.age?.toString() || "",
-        sex: profile.sex || "",
+        sex: profile.gender?.toLowerCase() || profile.sex?.toLowerCase() || "",
         height: profile.height?.toString() || "",
         weight: profile.weight?.toString() || "",
         city: profile.city || "",
@@ -106,6 +89,7 @@ export function EditProfile() {
       phone: formData.phone,
       age: parseInt(formData.age),
       sex: formData.sex,
+      gender: formData.sex.toUpperCase(),
       height: heightNum,
       weight: weightNum,
       bmi: bmi,

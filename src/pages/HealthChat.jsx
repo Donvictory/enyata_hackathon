@@ -57,9 +57,33 @@ export function HealthChat() {
   const generateLocalAIResponse = (userMessage) => {
     const profile = getUserProfile();
     const todayData = getTodaysCheckIn();
+    const remedyTasks = JSON.parse(localStorage.getItem("remedy_tasks") || "{}")?.tasks || [];
     const lowerMessage = userMessage.toLowerCase();
+    
+    // Check-in context awareness for generic health advice
+    if (lowerMessage.includes("help") || lowerMessage.includes("what should i do") || lowerMessage.includes("remedy") || lowerMessage.includes("advice") || lowerMessage.includes("task")) {
+      if (!todayData) {
+        return `I'd love to help, but I don't have your check-in data for today yet! Please complete a Daily Check-in so I can see how you're doing and offer the right advice. 📊`;
+      }
 
-    // Check-in context awareness
+      let analysis = `Analyzing your vitals for today... `;
+      const recommendations = [];
+
+      // Symptom and Vitals check
+      if (todayData.hoursSlept < 6) recommendations.push("💤 You're low on sleep (only " + todayData.hoursSlept + "h). Prioritize a 20-minute power nap.");
+      if (todayData.stressLevel >= 7) recommendations.push("🧘 Your stress is high (" + todayData.stressLevel + "/10). Try a 5-minute deep breathing session.");
+      if (todayData.waterIntake < 6) recommendations.push("💧 You've only had " + todayData.waterIntake + " glasses of water. Hydration is key in this heat!");
+
+      // Include specific remedy tasks if available
+      if (remedyTasks.length > 0) {
+         recommendations.push("✨ I've also generated these specific remedies for you: " + remedyTasks.map(t => t.title).join(", ") + ".");
+      }
+
+      if (recommendations.length > 0) {
+        return `${analysis}\n\n${recommendations.join('\n\n')}\n\nDo you want more details on any of these? 💚`;
+      }
+    }
+    
     if (
       lowerMessage.includes("how am i doing") ||
       lowerMessage.includes("status")
@@ -68,21 +92,22 @@ export function HealthChat() {
         return `I don't have your vitals for today yet, ${profile?.name || "Friend"}. Why don't you complete a Daily Check-in so I can give you an accurate status update? 📊`;
       }
 
-      let statusMsg = `Based on your check-in today, ${profile?.name || "Friend"}: `;
-      if (todayData.resilienceScore >= 80) {
+      const score = todayData.resilienceScore || 0;
+      let statusMsg = `Your Resilience Tank is currently at ${score}%, ${profile?.name || "Friend"}. `;
+      if (score >= 80) {
         statusMsg +=
-          "Your resilience tank is looking strong! 🔋 Your sleep and activity levels are excellent.";
-      } else if (todayData.resilienceScore >= 50) {
+          "🔋 You're doing excellent! Your adaptive capacity is at peak performance.";
+      } else if (score >= 50) {
         statusMsg +=
-          "You're in a stable zone, but there's room for improvement. Watch your sleep and stress levels.";
+          "⚖️ Your levels are stable, but try to reduce stress to refill your tank.";
       } else {
         statusMsg +=
-          "Your resilience is currently low. I notice high stress or low rest in your data. Please prioritize recovery today. 🫂";
+          "⚠️ Your tank is running low. Please prioritize recovery and rest immediately.";
       }
 
       if (todayData.waterIntake < 5)
         statusMsg +=
-          " Also, don't forget to drink more water - you're below target today! 💧";
+          " Also, your hydration is low today – drink up! 💧";
 
       return statusMsg;
     }

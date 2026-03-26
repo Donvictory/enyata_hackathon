@@ -41,28 +41,23 @@ function normalise(c) {
 
 /**
  * Calculate a resilience score (0–100) for a single normalised record.
- *
- * Scoring (each out of 20):
- *   Sleep      — 8h target
- *   Mood       — 10-point scale → /10 * 20
- *   Low Stress — inverse of stress level
- *   Activity   — 30-min target
- *   Hydration  — 8 glasses target
- *
- * Penalty for bad health status or serious symptoms.
+ * This is the source of truth for the Resilience Tank.
  */
-function scoreRecord(r) {
-  const sleep = Math.min((r.hoursSlept / 8) * 20, 20);
-  const mood = Math.min((r.mood / 10) * 20, 20);
-  const stress = Math.min(((10 - r.stressLevel) / 10) * 20, 20);
-  const activity = Math.min((r.physicalActivity / 30) * 20, 20);
-  const hydration = Math.min((r.waterIntake / 8) * 20, 20);
+export function calculateResilienceScore(r) {
+  // Ensure we are working with a normalised record
+  const record = r.mood !== undefined ? r : normalise(r);
+  
+  const sleep = Math.min((record.hoursSlept / 8) * 20, 20);
+  const mood = Math.min((record.mood / 10) * 20, 20);
+  const stress = Math.min(((10 - record.stressLevel) / 10) * 20, 20);
+  const activity = Math.min((record.physicalActivity / 30) * 20, 20);
+  const hydration = Math.min((record.waterIntake / 8) * 20, 20);
 
   let base = sleep + mood + stress + activity + hydration;
 
   // Health-status penalty
-  if (r.healthStatus === "POOR" || r.healthStatus === "SICK") base -= 10;
-  else if (r.healthStatus === "FAIR") base -= 4;
+  if (record.healthStatus === "POOR" || record.healthStatus === "SICK") base -= 10;
+  else if (record.healthStatus === "FAIR") base -= 4;
 
   // Symptom penalty (capped)
   const seriousSymptoms = [
@@ -71,14 +66,16 @@ function scoreRecord(r) {
     "SEVERE_HEADACHE",
     "VOMITING",
   ];
-  const seriousCount = r.symptoms.filter((s) =>
+  const symptoms = Array.isArray(record.symptomsToday) ? record.symptomsToday : (record.symptoms || []);
+  const seriousCount = symptoms.filter((s) =>
     seriousSymptoms.some((ss) => s.includes(ss)),
   ).length;
   base -= Math.min(seriousCount * 5, 15);
 
   // Lifestyle penalty
-  if (r.lifestyleChecks.includes("SMOKED_TODAY")) base -= 3;
-  if (r.lifestyleChecks.includes("DRANK_LAST_NIGHT")) base -= 3;
+  const lifestyle = record.lifestyleChecks || [];
+  if (lifestyle.includes("SMOKED_TODAY")) base -= 3;
+  if (lifestyle.includes("DRANK_LAST_NIGHT")) base -= 3;
 
   return Math.max(0, Math.min(100, Math.round(base)));
 }
@@ -113,7 +110,7 @@ export const detectDrift = (history, profile) => {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // 2. Per-record resilience scores
-  const scores = records.map(scoreRecord);
+  const scores = records.map(calculateResilienceScore);
 
   // 3. Rolling resilience: weight recent records more
   //    Use last 7 days; if fewer records, use all.

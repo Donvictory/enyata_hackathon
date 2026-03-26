@@ -7,8 +7,10 @@ import {
   AlertTriangle,
   Calendar,
   Award,
-  Info,
+  Bot,
+  Stethoscope,
   Sparkles,
+  Menu,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -18,7 +20,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../Components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../Components/ui/sheet";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -177,12 +187,6 @@ export function Navbar() {
               </PopoverContent>
             </Popover>
 
-            <button
-              onClick={() => navigate("/profile")}
-              className="p-2.5 rounded-2xl bg-gray-50 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100"
-            >
-              <Settings className="w-5 h-5" />
-            </button>
             <div
               onClick={() => navigate("/profile")}
               className="w-10 h-10 rounded-2xl bg-emerald-100 border-2 border-white shadow-md cursor-pointer overflow-hidden flex items-center justify-center hover:scale-105 transition-transform"
@@ -193,6 +197,63 @@ export function Navbar() {
                 className="w-full h-full object-cover"
               />
             </div>
+
+            {location.pathname === "/" && (
+              <div className="flex md:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <button className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm ml-2">
+                      <Menu className="w-5 h-5" />
+                    </button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-[300px] sm:w-[350px] rounded-l-[3rem] border-none shadow-2xl p-8">
+                    <SheetHeader className="text-left mb-8">
+                      <SheetTitle className="text-2xl font-bold text-gray-900 tracking-tight">
+                        Main Menu
+                      </SheetTitle>
+                    </SheetHeader>
+                    <div className="space-y-4">
+                      {[
+                        { label: "Features", path: "/#features", icon: Activity },
+                        { label: "Community", path: "/#community", icon: Bot },
+                        { label: "Partner Clinics", path: "/#clinics", icon: Stethoscope },
+                        { label: "About DriftCare", path: "/#about", icon: Award },
+                      ].map((link, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            if (link.path.startsWith("#")) {
+                               const element = document.getElementById(link.path.substring(1));
+                               element?.scrollIntoView({ behavior: 'smooth' });
+                            } else {
+                               navigate(link.path);
+                            }
+                          }}
+                          className={`w-full flex items-center gap-4 p-4 rounded-3xl border-2 transition-all bg-white border-transparent text-gray-500 hover:border-gray-100`}
+                        >
+                          <div className={`p-2 rounded-xl bg-gray-50`}>
+                            <link.icon className="w-5 h-5" />
+                          </div>
+                          <span className="text-base tracking-tight">{link.label}</span>
+                        </button>
+                      ))}
+                      <Separator className="my-4 opacity-50" />
+                      <Button 
+                        onClick={() => navigate("/login")}
+                        className="w-full h-14 rounded-3xl bg-emerald-600 hover:bg-emerald-700 font-bold"
+                      >
+                         Launch Application
+                      </Button>
+                    </div>
+                    <div className="absolute bottom-10 left-8 right-8 text-center">
+                      <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">
+                        DriftCare NG
+                      </p>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            )}
           </div>
         </div>
       </div>

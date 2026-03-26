@@ -32,6 +32,8 @@ import {
   Rocket,
   Globe,
   Database,
+  Settings,
+  ChevronLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -106,6 +108,17 @@ export function Profile() {
   return (
     <div className="min-h-screen p-4 pb-24 bg-gray-50/50">
       <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex justify-start mb-6 pt-6">
+          <Button
+            onClick={() => navigate("/dashboard")}
+            variant="ghost"
+            className="rounded-2xl text-gray-400 hover:text-gray-900 group transition-all font-bold"
+          >
+            <ChevronLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Dashboard
+          </Button>
+        </div>
+
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -245,9 +258,9 @@ export function Profile() {
                 </div>
                 {profile.healthConditions?.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
-                    {profile.healthConditions.map((condition) => (
+                    {profile.healthConditions.map((condition, i) => (
                       <span
-                        key={condition}
+                        key={`${condition}-${i}`}
                         className="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-semibold border border-red-200 shadow-sm"
                       >
                         {condition}
@@ -267,9 +280,9 @@ export function Profile() {
                 </div>
                 {profile.familyHealthHistory?.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
-                    {profile.familyHealthHistory.map((item) => (
+                    {profile.familyHealthHistory.map((item, i) => (
                       <span
-                        key={item}
+                        key={`${item}-${i}`}
                         className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200 shadow-sm"
                       >
                         {item}
@@ -286,29 +299,31 @@ export function Profile() {
           </Card>
         </div>
 
-        {/* Privacy & Mission Section */}
+        {/* Account & Performance Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="border-none shadow-xl bg-gradient-to-br from-emerald-600 to-emerald-800 text-white rounded-[2.5rem] overflow-hidden">
+          <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
             <CardHeader className="p-8 pb-4">
               <CardTitle className="flex items-center gap-3 text-xl">
-                <Shield className="w-6 h-6 text-emerald-200" />
-                Data Sovereign
+                <Settings className="w-6 h-6 text-gray-400" />
+                System Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 pt-0 space-y-4">
               <div className="space-y-3">
                 {[
-                  "Local-first architecture",
-                  "End-to-end encrypted storage",
-                  "Zero third-party sharing",
-                  "Full GDPR/NDPR compliance",
-                ].map((text, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                      <ShieldCheckIcon className="w-3 h-3 text-emerald-100" />
-                    </div>
-                    <span className="text-xs font-bold text-emerald-50">
-                      {text}
+                  { label: "Notification Preferences", val: "Health Drift Alerts" },
+                  { label: "Biometric Integration", val: "Enabled" },
+                  { label: "Measurement System", val: "Metric (cm/kg)" },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                  >
+                    <span className="text-sm font-bold text-gray-500 font-medium">
+                      {item.label}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+                      {item.val}
                     </span>
                   </div>
                 ))}
@@ -318,24 +333,23 @@ export function Profile() {
 
           <Card className="border-none shadow-xl bg-white rounded-[2.5rem] overflow-hidden">
             <CardHeader className="p-8 pb-4">
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                DriftCare Odyssey
+              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <Sparkles size={24} className="text-yellow-500" />
+                Next Check-in
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 pt-0 space-y-4">
               <p className="text-sm font-bold text-gray-600 leading-relaxed">
-                Nigeria's first AI-powered preventive health system. Our focus
-                is high-fidelity drift detection for earlier clinical
-                intervention.
+                Check back in tomorrow to update your health profile and keep your resilience tracking accurate.
               </p>
-              <div className="flex items-center gap-2 pt-2">
-                <div className="bg-emerald-100 px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-emerald-700 uppercase">
-                  Version 1.0.0
-                </div>
-                <div className="bg-blue-100 px-3 py-1 rounded-full text-sm text-opacity-80 font-semibold text-blue-700 uppercase">
-                  Lagos, NG
-                </div>
-              </div>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/check-in")}
+                disabled={profile.hasCompletedDailyChecks}
+                className="rounded-xl w-full h-11 border-emerald-100 text-emerald-700 bg-emerald-50 font-bold"
+              >
+                {profile.hasCompletedDailyChecks ? "Checked-in for today" : "Proceed to Check-in"}
+              </Button>
             </CardContent>
           </Card>
         </div>

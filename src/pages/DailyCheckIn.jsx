@@ -19,7 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../Components/ui/select";
-import { saveDailyCheckIn, getTodaysCheckIn, addPoints } from "../lib/storage";
+import { getTodaysCheckIn, saveDailyCheckIn, addPoints, saveRemedyTasks } from "../lib/storage";
+import { generateRemedyTasks } from "../lib/remedy-tasks";
 import {
   Heart,
   Sparkles,
@@ -38,6 +39,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMe } from "../hooks/use-auth";
 import { useCreateDailyCheckIn } from "../hooks/use-daily-check-in";
+import { calculateResilienceScore } from "../lib/drift-detection";
 
 const symptoms = [
   "NONE",
@@ -61,22 +63,8 @@ const symptomLabels = {
   BODY_ACHES: "Body Aches",
 };
 
-// Quick resilience calculation
-function calculateQuickScore(data) {
-  let score = 100;
-  if (data.hoursSlept < 6) score -= 15;
-  if (data.stressLevel >= 8) score -= 15;
-  if (data.mood <= 4) score -= 10;
-  if (data.physicalActivity === 0) score -= 10;
-  if (data.waterIntake < 4) score -= 10;
-  if (data.symptoms.length > 1 && !data.symptoms.includes("None")) score -= 15;
-  return Math.max(0, score);
-}
-
 export function DailyCheckIn() {
   const { data: user } = useMe();
-  console.log(user);
-
   const navigate = useNavigate();
   const checkInMutation = useCreateDailyCheckIn();
   const [step, setStep] = useState(1);
@@ -94,13 +82,7 @@ export function DailyCheckIn() {
     healthStatus: "GOOD",
   });
 
-  useEffect(() => {
-    const todayCheckIn = getTodaysCheckIn();
-    if (user?.hasCompletedDailyChecks === true) {
-      toast.info("You've already checked in today! 💚");
-      navigate("/dashboard");
-    }
-  }, [navigate]);
+  const isAlreadyCheckedIn = user?.hasCompletedDailyChecks === true || !!getTodaysCheckIn();
 
   const handleNext = () => {
     setStep(step + 1);
@@ -109,7 +91,6 @@ export function DailyCheckIn() {
   const handleComplete = async () => {
     setIsSubmitting(true);
     const today = new Date().toISOString().split("T")[0];
-    const resilienceScore = calculateQuickScore(checkInData);
 
     try {
       // 1. Prepare payload for backend
@@ -130,10 +111,14 @@ export function DailyCheckIn() {
         anythingElse: checkInData.journal,
       };
 
-      // 2. Submit to backend
-      await checkInMutation.mutateAsync(payload);
+      // Calculate score for local consistency & display
+      const resilienceScore = calculateResilienceScore({
+        ...payload,
+        mood: payload.currentMood,
+        healthStatus: payload.currentHealthStatus,
+      });
 
-      // 3. Local persistence for offline/legacy support
+      // 1. Local persistence for offline/legacy support & stat sync
       const checkInLocal = {
         id: `checkin-${Date.now()}`,
         date: today,
@@ -142,7 +127,13 @@ export function DailyCheckIn() {
       };
 
       saveDailyCheckIn(checkInLocal);
-      addPoints(15);
+
+      // 2. Submit to backend (which triggers cache invalidation)
+      await checkInMutation.mutateAsync(payload);
+
+      // Generate exactly 4 remedies based on this fresh check-in
+      const remedies = generateRemedyTasks(checkInLocal, user);
+      saveRemedyTasks(remedies);
 
       toast.success("Check-in complete! You earned 15 points! 🎉");
       navigate("/dashboard");
@@ -185,25 +176,72 @@ export function DailyCheckIn() {
       </div>
 
       <div className="w-full max-w-2xl">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3 px-2">
-            <span className="text-sm text-opacity-80 font-semibold text-emerald-600 font-medium tracking-wide">
-              Daily Vitals Protocol
-            </span>
-            <span className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide">
-              Step {step} of 4
-            </span>
-          </div>
-          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${(step / 4) * 100}%` }}
-              className="h-full bg-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.3)] transition-all duration-500"
-            />
-          </div>
-        </div>
+        {isAlreadyCheckedIn ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full"
+          >
+            <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.05)] bg-white/80 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 md:p-12 text-center space-y-8">
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="bg-emerald-50 w-24 h-24 rounded-[3rem] flex items-center justify-center shadow-inner">
+                    <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+                  </div>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3, type: "spring" }}
+                    className="absolute -top-2 -right-2 bg-emerald-600 text-white p-2 rounded-full shadow-lg"
+                  >
+                    <Sparkles className="w-5 h-5 fill-white" />
+                  </motion.div>
+                </div>
+              </div>
 
-        <AnimatePresence mode="wait">
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+                  You're all set for today! 💚
+                </h2>
+                <div className="p-6 bg-emerald-50/50 rounded-3xl border border-emerald-100">
+                  <p className="text-lg font-semibold text-emerald-800 leading-relaxed">
+                    You've successfully completed your check-in. Please come back and check in again in the next 24 hours to keep your resilience tank full!
+                  </p>
+                </div>
+                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest font-medium">
+                  Next update available: Tomorrow
+                </p>
+              </div>
+
+              <Button
+                onClick={() => navigate("/dashboard")}
+                className="w-full h-16 rounded-3xl bg-gray-900 hover:bg-black text-white font-bold text-lg shadow-xl shadow-gray-200 transition-all active:scale-95"
+              >
+                Back to Dashboard
+              </Button>
+            </Card>
+          </motion.div>
+        ) : (
+          <>
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3 px-2">
+                <span className="text-sm text-opacity-80 font-semibold text-emerald-600 font-medium tracking-wide">
+                  Daily Vitals Protocol
+                </span>
+                <span className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide">
+                  Step {step} of 4
+                </span>
+              </div>
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(step / 4) * 100}%` }}
+                  className="h-full bg-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.3)] transition-all duration-500"
+                />
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
           <motion.div
             key={step}
             initial={{ opacity: 0, y: 10 }}
@@ -510,7 +548,7 @@ export function DailyCheckIn() {
                           <SelectTrigger className="h-14 rounded-xl border-2 font-bold focus:ring-emerald-500">
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
-                          <SelectContent className="rounded-xl border-none shadow-2xl">
+                          <SelectContent className="rounded-xl border-2 border-slate-100 !bg-white !opacity-100 shadow-2xl">
                             <SelectItem value="EXCELLENT">
                               Excellent - Feeling great!
                             </SelectItem>
@@ -705,9 +743,11 @@ export function DailyCheckIn() {
               </CardContent>
             </Card>
           </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
+        </>
+      )}
 
-        <div className="flex items-center justify-center gap-2 mt-8 opacity-50">
+      <div className="flex items-center justify-center gap-2 mt-8 opacity-50">
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span className="text-sm text-opacity-80 font-semibold text-gray-400 font-medium tracking-wide">
             Privacy Multi-Factor Enabled

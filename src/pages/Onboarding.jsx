@@ -40,8 +40,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../Components/ui/utils";
 
 const nigerianStates = [
-  "Lagos", "Abuja", "Kano", "Rivers", "Oyo", "Kaduna", "Ogun", "Anambra", "Delta", "Edo", "Enugu", "Imo", "Kwara", "Ondo", "Osun", "Plateau", "Bayelsa", "Cross River",
-].sort();
+  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+];
 
 const commonConditions = [
   "None", "Hypertension", "Diabetes", "Asthma", "Heart Disease", "Malaria (Recurring)", "Sickle Cell",
@@ -109,12 +109,18 @@ export function Onboarding() {
         "Sickle Cell": "SICKLE CELL",
       };
 
+      const weight = parseFloat(formData.weight);
+      const height = parseFloat(formData.height);
+      const bmiValue = calculateBMI(weight, height);
+
       const payload = {
         phoneNumber: formData.phone,
         age: parseInt(formData.age),
         gender: formData.gender.toUpperCase(),
-        height: parseFloat(formData.height),
-        weight: parseFloat(formData.weight),
+        height: height,
+        weight: weight,
+        bmi: bmiValue,
+        bmiCategory: bmiValue < 18.5 ? "Underweight" : bmiValue < 25 ? "Normal" : bmiValue < 30 ? "Overweight" : "Obese",
         city: formData.city,
         state: formData.state,
         healthConditions: formData.knownConditions
@@ -305,7 +311,7 @@ export function Onboarding() {
                         <SelectTrigger className="h-14 rounded-2xl border-gray-200 bg-white hover:bg-gray-50 focus:bg-white font-medium text-lg focus:ring-emerald-500 shadow-sm">
                           <SelectValue placeholder="Select state" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-2xl border border-gray-100 shadow-xl max-h-[250px] p-2 overflow-y-auto">
+                        <SelectContent className="rounded-2xl border-2 border-slate-100 !bg-white !opacity-100 shadow-2xl max-h-[280px] p-2 overflow-y-auto z-[9999]">
                           {nigerianStates.map((s) => (
                             <SelectItem key={s} value={s} className="py-3 px-4 rounded-xl cursor-pointer font-medium hover:bg-gray-50">
                               {s}

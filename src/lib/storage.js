@@ -88,11 +88,22 @@ export const saveDailyCheckIn = (checkInData) => {
   const history = getDailyCheckIns();
   const today = new Date().toISOString().split("T")[0];
   const updated = history.filter((c) => c.date !== today);
+  const isNewToday = !history.some((c) => c.date === today);
+
   updated.push({ ...checkInData, date: today });
   localStorage.setItem(STORAGE_KEYS.CHECK_INS, JSON.stringify(updated));
 
-  // Award points for check-in
-  addPoints(10);
+  // Sync with User Profile
+  const user = getUserAuth();
+  if (user) {
+    user.hasCompletedDailyChecks = true;
+    if (isNewToday) {
+      user.totalCheckIns = (user.totalCheckIns || 0) + 1;
+      user.healthPoints = (user.healthPoints || 0) + 15;
+    }
+    saveUserProfile(user);
+    saveUserAuth(user);
+  }
 };
 
 export const getDailyCheckIns = () => {
@@ -224,15 +235,21 @@ export const saveChatMessage = (message) => {
 
 export const getChatMessages = () => {
   const data = localStorage.getItem(STORAGE_KEYS.MESSAGES);
-  return data
-    ? JSON.parse(data)
-    : [
-        {
-          role: "assistant",
-          content: "Hello! I am your Companion. How can I help you today?",
-          timestamp: new Date().toISOString(),
-        },
-      ];
+  const today = getTodaysCheckIn();
+  
+  if (data) return JSON.parse(data);
+
+  const welcomeContent = today 
+    ? `Welcome back! I see you've completed your check-in today. Your resilience tank is at ${today.resilienceScore || '...'}%. Based on your inputs, I have some health remedies ready. What would you like to discuss?`
+    : "Hello! I am your Companion. Once you complete your daily check-in, I can give you personalized health advice. How can I help you today?";
+
+  return [
+    {
+      role: "assistant",
+      content: welcomeContent,
+      timestamp: new Date().toISOString(),
+    },
+  ];
 };
 
 // --- MEDICAL REPORTS ---

@@ -29,7 +29,11 @@ import {
   toggleRemedyTask,
 } from "../lib/storage";
 import { generateRemedyTasks } from "../lib/remedy-tasks";
-import { detectDrift, generateContextualMessage } from "../lib/drift-detection";
+import {
+  detectDrift,
+  generateContextualMessage,
+  calculateResilienceScore,
+} from "../lib/drift-detection";
 import {
   Heart,
   TrendingUp,
@@ -129,26 +133,35 @@ export function Dashboard() {
 
     // 3. Normalize field names consistently (backend → internal shape)
     //    This must match the normalise() logic inside drift-detection.js
-    const normalizeRecord = (c) => ({
-      ...c,
-      hoursSlept: parseFloat(c.hoursSlept) || 0,
-      stressLevel: parseFloat(c.stressLevel) || 0,
-      mood: parseFloat(c.currentMood ?? c.mood) || 0,
-      physicalActivity:
-        parseFloat(c.dailyActivityMeasure ?? c.physicalActivity) || 0,
-      waterIntake: parseFloat(c.numOfWaterGlasses ?? c.waterIntake) || 0,
-      healthStatus: (
-        c.currentHealthStatus ||
-        c.healthStatus ||
-        "GOOD"
-      ).toUpperCase(),
-      symptoms: Array.isArray(c.symptomsToday)
-        ? c.symptomsToday
-        : Array.isArray(c.symptoms)
-          ? c.symptoms
-          : [],
-      date: c.createdAt || c.date || new Date().toISOString(),
-    });
+    const normalizeRecord = (c) => {
+      const base = {
+        ...c,
+        hoursSlept: parseFloat(c.hoursSlept) || 0,
+        stressLevel: parseFloat(c.stressLevel) || 0,
+        mood: parseFloat(c.currentMood ?? c.mood) || 0,
+        physicalActivity:
+          parseFloat(c.dailyActivityMeasure ?? c.physicalActivity) || 0,
+        waterIntake: parseFloat(c.numOfWaterGlasses ?? c.waterIntake) || 0,
+        healthStatus: (
+          c.currentHealthStatus ||
+          c.healthStatus ||
+          "GOOD"
+        ).toUpperCase(),
+        symptoms: Array.isArray(c.symptomsToday)
+          ? c.symptomsToday
+          : Array.isArray(c.symptoms)
+            ? c.symptoms
+            : [],
+        lifestyleChecks: Array.isArray(c.lifestyleChecks) ? c.lifestyleChecks : [],
+        date: c.createdAt || c.date || new Date().toISOString(),
+      };
+      
+      // Calculate resilience score for this specific record
+      return {
+        ...base,
+        resilienceScore: calculateResilienceScore(base),
+      };
+    };
 
     const normalizedCheckIns = rawCheckIns.map(normalizeRecord);
     const normalizedToday = rawToday ? normalizeRecord(rawToday) : null;

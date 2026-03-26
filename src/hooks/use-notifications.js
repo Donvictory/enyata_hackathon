@@ -16,6 +16,7 @@ export const useNotifications = () => {
   });
 
   const notifications = useMemo(() => {
+    const todayStr = new Date().toISOString().split("T")[0];
     const list = [];
 
     // 1. Health Alerts from Drift Detection
@@ -28,7 +29,7 @@ export const useNotifications = () => {
           title: alert.pattern,
           message: alert.message,
           severity: alert.severity,
-          timestamp: new Date().toISOString(), // In a real app, this would be the detected time
+          timestamp: todayStr, // Stable for the same day
           icon: "alert",
         });
       });
@@ -42,7 +43,7 @@ export const useNotifications = () => {
         title: "Daily Check-in",
         message: "You haven't completed your health check-in for today yet.",
         severity: "medium",
-        timestamp: new Date().toISOString(),
+        timestamp: todayStr,
         icon: "calendar",
       });
     }
@@ -55,7 +56,7 @@ export const useNotifications = () => {
         title: "Milestone Reached",
         message: `You've earned ${profile.healthPoints} Health XP! Keep up the good work.`,
         severity: "low",
-        timestamp: profile.updatedAt || new Date().toISOString(),
+        timestamp: todayStr,
         icon: "award",
       });
     }
@@ -63,16 +64,13 @@ export const useNotifications = () => {
     // 4. Remedy Tasks Ready (After Check-in)
     if (todayCheckIn) {
       list.push({
-        id: `remedy-ready-${new Date().toISOString().split("T")[0]}`,
+        id: `remedy-ready-${todayStr}`,
         type: "success",
         title: "Remedies Generated",
         message:
           "New personalized health tasks are ready based on today's vitals.",
         severity: "low",
-        timestamp:
-          todayCheckIn.createdAt ||
-          todayCheckIn.date ||
-          new Date().toISOString(),
+        timestamp: todayStr,
         icon: "sparkles",
       });
     }

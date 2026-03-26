@@ -59,7 +59,9 @@ export function Layout() {
   const authenticated = !!user;
   const onboarded = user ? user.isOnboarded : false;
   // Navigation only shows for logged-in users who finished onboarding and aren't on the landing page
-  const showNav = authenticated && onboarded && !isPublicRoute;
+  const isLandingPage = location.pathname === "/";
+  // Navigation shows for logged-in users who finished onboarding, OR for everyone on the Landing page
+  const showNav = (authenticated && onboarded && !isPublicRoute) || isLandingPage;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-blue-50 relative overflow-x-hidden">
