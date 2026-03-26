@@ -53,26 +53,16 @@ export function LandingPage() {
               </span>
             </span>
           </div>
-          {/* {user ? (
-            <>
-              <div className="hidden sm:flex items-center gap-6">
-                <Button
-                  onClick={() => navigate("/dashboard")}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 shadow-lg shadow-emerald-100"
-                >
-                  Go to Dashboard
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-              <div className="flex sm:hidden items-center gap-4">
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="text-xs font-semibold text-emerald-600 font-medium tracking-wide"
-                >
-                  Dashboard
-                </button>
-              </div>
-            </>
+          {user ? (
+            <div className="flex items-center gap-6">
+              <Button
+                onClick={() => navigate("/dashboard")}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 shadow-lg shadow-emerald-100"
+              >
+                Go to Dashboard
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           ) : (
             <>
               <div className="hidden sm:flex items-center gap-6">
@@ -89,31 +79,23 @@ export function LandingPage() {
                   Join DriftCare NG
                 </Button>
               </div>
-              <div className="flex sm:hidden items-center gap-4">
+              <div className="flex sm:hidden items-center gap-3">
                 <button
                   onClick={() => navigate("/login")}
-                  className="text-xs font-semibold text-emerald-600 font-medium tracking-wide"
+                  className="px-4 py-2 text-sm font-bold text-gray-700 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"
                 >
-                  Login
+                  Sign In
                 </button>
+                <Button
+                  onClick={() => navigate("/signup")}
+                  size="sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4 text-xs font-bold shadow-lg shadow-emerald-100"
+                >
+                  Join
+                </Button>
               </div>
             </>
-          )} */}
-
-          <div className="hidden sm:flex items-center gap-6">
-            <button
-              onClick={() => navigate("/login")}
-              className="text-sm font-bold text-gray-600 hover:text-emerald-600 transition-colors"
-            >
-              Sign In
-            </button>
-            <Button
-              onClick={() => navigate("/signup")}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 shadow-lg shadow-emerald-100"
-            >
-              Join DriftCare NG
-            </Button>
-          </div>
+          )}
         </div>
       </nav>
 
@@ -195,7 +177,7 @@ export function LandingPage() {
                   onClick={() => navigate("/signup")}
                   className="w-full sm:w-auto bg-gray-900 hover:bg-black text-white px-8 md:px-10 py-6 md:py-8 rounded-2xl md:rounded-3xl text-lg md:text-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-gray-200"
                 >
-                  Start Monitoring Free
+                  Join DriftCare
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6 ml-2" />
                 </Button>
                 <Button

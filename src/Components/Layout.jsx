@@ -4,7 +4,7 @@ import { useMe } from "../hooks/use-auth";
 import { isAuthenticated } from "../lib/storage";
 import { subscribeUserToPush } from "../lib/push-notification";
 
-import { Heart, Home, User, Stethoscope, Bot, Loader2 } from "lucide-react";
+import { Heart, Home, User, Stethoscope, Bot, Loader2, ShoppingBag } from "lucide-react";
 
 import { Navbar } from "./Navbar";
 import { InstallPWA } from "./InstallPWA";
@@ -86,20 +86,26 @@ export function Layout() {
               onClick={() => navigate("/check-in")}
             />
             <NavButton
+              icon={<ShoppingBag size={24} />}
+              label="Market"
+              active={location.pathname === "/get-help"}
+              onClick={() => navigate("/get-help")}
+            />
+            <NavButton
               icon={<Bot size={24} />}
-              label="AI Chat"
+              label="AI"
               active={location.pathname === "/health-chat"}
               onClick={() => navigate("/health-chat")}
             />
             <NavButton
               icon={<Stethoscope size={24} />}
-              label="Doctors"
+              label="Docs"
               active={location.pathname === "/find-doctor"}
               onClick={() => navigate("/find-doctor")}
             />
             <NavButton
               icon={<User size={24} />}
-              label="Profile"
+              label="Me"
               active={location.pathname === "/profile"}
               onClick={() => navigate("/profile")}
             />

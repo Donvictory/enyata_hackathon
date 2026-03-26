@@ -8,6 +8,7 @@ import { Profile } from "./pages/Profile";
 import { EditProfile } from "./pages/EditProfile";
 import { DoctorFinder } from "./pages/DoctorFinder";
 import { HealthChat } from "./pages/HealthChat";
+import { GetHelp } from "./pages/GetHelp";
 import { NotFound } from "./pages/NotFound";
 import { Layout } from "./Components/Layout";
 import { LandingPage } from "./pages/LandingPage";
@@ -92,6 +93,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <HealthChat />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "get-help",
+        element: (
+          <ProtectedRoute>
+            <GetHelp />
           </ProtectedRoute>
         ),
       },
