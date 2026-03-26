@@ -27,6 +27,7 @@ import {
   getRemedyTasks,
   saveRemedyTasks,
   toggleRemedyTask,
+  isPremiumUser,
 } from "../lib/storage";
 import { generateRemedyTasks } from "../lib/remedy-tasks";
 import {
@@ -395,7 +396,10 @@ export function Dashboard() {
               <CardDescription>Your current adaptive capacity</CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center py-6">
-              <ResilienceTank score={driftResult.resilienceScore} />
+              <ResilienceTank 
+                score={driftResult.resilienceScore} 
+                isPremium={isPremiumUser()} 
+              />
             </CardContent>
           </Card>
 

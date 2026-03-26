@@ -13,6 +13,8 @@ const STORAGE_KEYS = {
   REMEDY_TASKS: "remedy_tasks",
   ACCESS_TOKEN: "access_token",
   REFRESH_TOKEN: "refresh_token",
+  BOOKINGS: "user_bookings",
+  PREMIUM: "is_premium_user",
 };
 
 // --- AUTHENTICATION ---
@@ -262,4 +264,32 @@ export const saveMedicalReport = (report) => {
 export const getMedicalReports = () => {
   const data = localStorage.getItem(STORAGE_KEYS.MEDICAL_REPORTS);
   return data ? JSON.parse(data) : [];
+};
+
+// --- MARKETPLACE & PREMIUM ---
+export const getBookings = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
+  return data ? JSON.parse(data) : [];
+};
+
+export const addBooking = (booking) => {
+  const bookings = getBookings();
+  const updated = [...bookings, { ...booking, id: Date.now(), date: new Date().toISOString() }];
+  localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(updated));
+  setPremiumUser(true); // Premium when they have a booking
+  
+  // Also update user profile points
+  const profile = getUserProfile();
+  if (profile) {
+    profile.healthPoints = (profile.healthPoints || 0) + 100;
+    saveUserProfile(profile);
+  }
+};
+
+export const isPremiumUser = () => {
+  return localStorage.getItem(STORAGE_KEYS.PREMIUM) === "true";
+};
+
+export const setPremiumUser = (val) => {
+  localStorage.setItem(STORAGE_KEYS.PREMIUM, val ? "true" : "false");
 };

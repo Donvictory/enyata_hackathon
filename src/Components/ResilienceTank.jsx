@@ -39,13 +39,26 @@ const getStatus = (score) => {
   };
 };
 
-export function ResilienceTank({ score }) {
+export function ResilienceTank({ score, isPremium = false }) {
   const safeScore = Math.max(0, Math.min(100, score || 0));
   const status = getStatus(safeScore);
   const fillPercent = safeScore;
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full relative">
+      {isPremium && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute -top-4 -right-2 z-10 bg-gradient-to-tr from-amber-300 via-yellow-500 to-amber-600 p-1.5 rounded-full shadow-lg border-2 border-white"
+        >
+          <div className="bg-white/20 backdrop-blur-sm p-1 rounded-full border border-white/40">
+            <span className="text-[10px] font-black text-white drop-shadow-sm px-1 leading-none flex items-center gap-1 uppercase tracking-tighter">
+              ★ Premium 
+            </span>
+          </div>
+        </motion.div>
+      )}
       {/* Tank */}
       <div
         className="relative w-28 h-44 rounded-xl overflow-hidden"
